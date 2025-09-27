@@ -14,6 +14,13 @@ In the screenshots below, you can see the configured PyCharm interface with the 
 
 ## Submit Your Assignment
 ### ❓ Question 5: How much time did you spend on this session?
+To complete the tasks in this session, we spent approximately 4 hours. This time was divided between learning about AWS Cloud services (the AWS courses 5 and 6 took approximately 2 hours in total), setting up the Python development environment, writing the Python program, and answering the questions in this assignment.
 
 ### ❓ Question 6: What challenges did you encounter, and how did you overcome them?
+During the laboratory session, we encountered a few challenges, but we managed to overcome them successfully.
 
+The first challenge was understanding some of the more complex concepts in the AWS courses, particularly in course 5, which covered networking and VPC concepts. To overcome this, we took our time to review the material, and checked the concepts in external sources to conceal a clearer understanding.
+
+The second challenge was recalling Python syntax and conventions, as it is not our first programming language. We overcame this by referring to Python documentation in this course and examples online to refresh our memory, and succeed in this session's task. 
+
+Overall, we worked well and got along as a team, supporting each other through the challenges and ensuring that we completed the tasks successfully.
