@@ -19,7 +19,7 @@ To complete the tasks in this session, we spent approximately 4 hours. This time
 ### ❓ Question 6: What challenges did you encounter, and how did you overcome them?
 During the laboratory session, we encountered a few challenges, but we managed to overcome them successfully.
 
-The first challenge was understanding some of the more complex concepts in the AWS courses, particularly in course 5, which covered networking and VPC concepts. To overcome this, we took our time to review the material, and checked the concepts in external sources to conceal a clearer understanding.
+The first challenge was understanding some of the more complex concepts in the AWS courses, particularly in course 5, which covered networking and VPC concepts. To overcome this, we took our time to review the material, and checked the concepts in external sources to conceive a clearer understanding.
 
 The second challenge was recalling Python syntax and conventions, as it is not our first programming language. We overcame this by referring to Python documentation in this course and examples online to refresh our memory, and succeed in this session's task. 
 
