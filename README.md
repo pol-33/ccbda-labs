@@ -1,4 +1,7 @@
-# 2026-1-xx
+# 2026-1-16
+## Team Members
+- Daniel Antonia Galleguillos
+- Pol Plana
 
 ## Task 1: Continue Learning About the AWS Cloud
 ### ❓ Question 1: Include screenshots of key steps and briefly explain what you learned or observed
