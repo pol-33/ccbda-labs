@@ -5,7 +5,15 @@
 
 ## Task 1: Deepen Your AWS Cloud Knowledge
 ### ❓ Question 1: Include screenshots of key steps and briefly explain what you learned or observed.
+In this task, we continued our AWS course by completing the module 6, focused on computing services. We learned how to create and deploy an EC2 instance, a Lambda function, and an Elastic Beanstalk application.
+We observed that AWS provides a wide range of computing services that can be used to deploy and manage applications in the cloud. We also learned about the different pricing models for these services, including on-demand, reserved, and spot instances.
+The most challenging part of this task was to understand the different configurations and settings for each service. However, the step-by-step instructions provided in the module were very helpful in guiding us through the process. In particular, the fac this module not ony includes a lab and a quiz, but also two activities  that allow us to practice in a real AWS environment.
 
+In previous modules, we had already created an EC2 instance, so we think he main advance in this one is on creating a Lambda function and an Elastic Beanstalk application.
+In the image below, we can see the different steps we followed to create a Lambda function that runs a simple Python script. We also created an Elastic Beanstalk application that deploys a web application using a pre-configured environment.
+![lambdaCreation.png](lambdaCreation.png)
+![beanstalkEnvironmnt.png](beanstalkEnvironmnt.png)
+![beanstackAppRunning.png](beanstackAppRunning.png)
 ### ❓ Question 2: Include screenshots of key steps and briefly explain what you learned or observed.
 
 ## Task 2: Getting Started with NLTK
