@@ -35,9 +35,9 @@ We considered that the total number of words is the length of the tokens list, b
 
 After adding the code provided that removes punctuations, we observed that the result changed.
 
-In WordCountTensorFlow_1.py the total number of words are 19593.
+In [WordCountTensorFlow_1.py](WordCountTensorFlow/WordCountTensorFlow_1.py) the total number of words are 19593.
 
-In WordCountTensorFlow_2.py the total number of words are 21661.
+In [WordCountTensorFlow_2.py](WordCountTensorFlow/WordCountTensorFlow_2.py) the total number of words are 21661.
 
 ### ❓ Question 5: Why isn’t "TensorFlow" the most frequent word?
 After running `WordCountTensorFlow_2.py`, we observed that "tensorflow" is not the most frequent word in the text. Instead, common words like "the", "and", and "to" appear more frequently.
@@ -84,7 +84,7 @@ INFO:__main__:Post liked successfully: at://did:plc:r5jq6sggdoy6v6q5mnusu3zf/app
 
 We have change the proviuos code so that it only extract 10 post and apply the code porvided.
 
-After executing BlueSky_3.py, we can observe that "@", "#" and "emotions" are tokenized correctly. 
+After executing [BlueSky_3.py](BlueSky/BlueSky_3.py), we can observe that "@", "#" and "emotions" are tokenized correctly. 
 
 Outout of BlueSky_3.py:
 ```
