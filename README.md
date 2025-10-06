@@ -11,15 +11,43 @@ The most challenging part of this task was to understand the different configura
 
 In previous modules, we had already created an EC2 instance, so we think he main advance in this one is on creating a Lambda function and an Elastic Beanstalk application.
 In the image below, we can see the different steps we followed to create a Lambda function that runs a simple Python script. We also created an Elastic Beanstalk application that deploys a web application using a pre-configured environment.
+
 ![lambdaCreation.png](lambdaCreation.png)
 ![beanstalkEnvironmnt.png](beanstalkEnvironmnt.png)
 ![beanstackAppRunning.png](beanstackAppRunning.png)
+
 ### ❓ Question 2: Include screenshots of key steps and briefly explain what you learned or observed.
 
 ## Task 2: Getting Started with NLTK
+### ❓ Question 3: Add your comments to `README.md
+We ran `WordCountTensorFlow_1.py`, installed NLTK and downloaded the tokenizer. We also needed to download the input file `FirstContactWithTensorFlow.txt` in the project root.
+Then, after reviewing the entire code to understand how it works, we added the total word count print in `main()` after tokenization:
+````
+total = len(tokens)
+print(f"\nTotal number of words: {total}")
+````
+We considered that the total number of words is the length of the tokens list, because it contains all the words in the text after tokenization.
+
 ### ❓ Question 4: Add the code to WordCountTensorFlow_2.py and your comments to `README.md
 
 ### ❓ Question 5: Why isn’t "TensorFlow" the most frequent word?
+After running `WordCountTensorFlow_2.py`, we observed that "tensorflow" is not the most frequent word in the text. Instead, common words like "the", "and", and "to" appear more frequently.
+```
+First 10 tokens: ['first', 'contact', 'with', 'tensorflow', 'get', 'started', 'with', 'deep', 'learning', 'programming']
+The 10 most common words are:
+'the' appears 1445 times.
+'of' appears 587 times.
+'to' appears 532 times.
+'in' appears 509 times.
+'a' appears 496 times.
+'and' appears 347 times.
+'tf' appears 304 times.
+'is' appears 289 times.
+'we' appears 283 times.
+'that' appears 276 times.
+```
+
+This is happening because the counting logic in the code does not filter out common stop words, so common stopwords and code tokens dominate. For example, words like the, of, to, etc. appear far more often than topical terms.
 
 ### ❓ Question 6: Which are the Stop Words?
 
