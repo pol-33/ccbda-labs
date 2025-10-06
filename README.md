@@ -12,9 +12,9 @@ The most challenging part of this task was to understand the different configura
 In previous modules, we had already created an EC2 instance, so we think he main advance in this one is on creating a Lambda function and an Elastic Beanstalk application.
 In the image below, we can see the different steps we followed to create a Lambda function that runs a simple Python script. We also created an Elastic Beanstalk application that deploys a web application using a pre-configured environment.
 
-![lambdaCreation.png](lambdaCreation.png)
-![beanstalkEnvironmnt.png](beanstalkEnvironmnt.png)
-![beanstackAppRunning.png](beanstackAppRunning.png)
+![lambdaCreation.png](media/lambdaCreation.png)
+![beanstalkEnvironmnt.png](media/beanstalkEnvironmnt.png)
+![beanstackAppRunning.png](media/beanstackAppRunning.png)
 
 ### ❓ Question 2: Include screenshots of key steps and briefly explain what you learned or observed.
 
