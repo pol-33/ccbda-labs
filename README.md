@@ -63,6 +63,27 @@ This is happening because the counting logic in the code does not filter out com
 From the previous question, we can observe that words such as “the,” “of,” “to,” “in,” “a,” “and,” “is,” “we,” “that,” and “tf” occur frequently but carry little meaningful information. These are considered stop words, as they do not contribute significantly to the overall understanding or analysis of the text.
 
 ### ❓ Question 7: Add the code to WordCountTensorFlow_3.py and your comments to `README.md
+What changed from WordCountTensorFlow_2.py to WordCountTensorFlow_3.py:
+- v2: counted raw tokens including common function words, so results were dominated by uninformative words.
+- v3: removes English stop words before counting, showing more meaningful terms. Also prints the total token count after stopword removal.
+
+In particular, we added the following code to remove stop words:
+- Import and download the stopwords list from NLTK:
+```
+from nltk.corpus import stopwords
+nltk.download('stopwords') 
+```
+
+- After tokenization, in the main function, we filter out stop words:
+```
+# Remove stopwords and show the 10 most common words again
+sw = stopwords.words('english')
+filtered = [w for w in tokens if not w in sw]
+count = Counter(filtered)
+print("\nThe 10 most common words after removing stopwords are:")
+for word, freq in count.most_common(10):
+    print(f"'{word}' appears {freq} times.")
+```
 
 ## Task 3: Using the BlueSky API in Python
 ### ❓ Question 8: Did the data print correctly?
@@ -78,6 +99,7 @@ INFO:httpx:HTTP Request: POST https://pholiota.us-west.host.bsky.network/xrpc/co
 INFO:__main__:Post liked successfully: at://did:plc:r5jq6sggdoy6v6q5mnusu3zf/app.bsky.feed.post/3m27uhiwqot2e
 ```
 ### ❓ Question 9: Add the code to BlueSky_2.py and your comments to `README.md
+
 
 ## Task 4: Posts pre-processing
 ### ❓ Question 10: Add the code to BlueSky_3.py and your comments to README.md.
