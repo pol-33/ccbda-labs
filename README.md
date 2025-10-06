@@ -18,6 +18,9 @@ In the image below, we can see the different steps we followed to create a Lambd
 
 ### ❓ Question 2: Include screenshots of key steps and briefly explain what you learned or observed.
 
+
+[Task 1 Zhehan](Zhehan)
+
 ## Task 2: Getting Started with NLTK
 ### ❓ Question 3: Add your comments to `README.md
 We ran `WordCountTensorFlow_1.py`, installed NLTK and downloaded the tokenizer. We also needed to download the input file `FirstContactWithTensorFlow.txt` in the project root.
