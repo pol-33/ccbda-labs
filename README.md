@@ -99,7 +99,35 @@ INFO:httpx:HTTP Request: POST https://pholiota.us-west.host.bsky.network/xrpc/co
 INFO:__main__:Post liked successfully: at://did:plc:r5jq6sggdoy6v6q5mnusu3zf/app.bsky.feed.post/3m27uhiwqot2e
 ```
 ### ❓ Question 9: Add the code to BlueSky_2.py and your comments to `README.md
+While BlueSky_1.py posted a message and liked it, BlueSky_2.py lists an actor’s feed with cursor-based pagination. Both use ATP_EMAIL and ATP_PASSWORD to login, but BlueSky_2.py also uses BLUESKY_USER to pick whose posts to list.
 
+```
+# v1: create a post, then like it
+from atproto import client_utils
+
+def create_and_post_text(client):
+    text = client_utils.TextBuilder().text("Hello World from ").link("Python SDK", "https://atproto.blue")
+    post = client.send_post(text)
+    return post
+
+def like_post(client, post):
+    client.like(post.uri, post.cid)
+```
+
+```
+# v2: list all posts from a handle with pagination
+def list_all_posts(client, handle):
+    cursor = ""
+    i = 1
+    while True:
+        feed = client.get_author_feed(actor=handle, limit=100, cursor=cursor)
+        cursor = feed.cursor
+        for item in feed.feed:
+            print(f"{i}: {item.post.record.created_at} -> {item.post.record.text}")
+            i += 1
+        if cursor is None:
+            break
+```
 
 ## Task 4: Posts pre-processing
 ### ❓ Question 10: Add the code to BlueSky_3.py and your comments to README.md.
@@ -119,6 +147,7 @@ INFO:httpx:HTTP Request: GET https://pholiota.us-west.host.bsky.network/xrpc/app
 
 ## Submit Your Assignment
 ### ❓ Question 11: How much time did you spend on this session?
+To complete the activities in this lab, we dedicated roughly 4 hours in total. This time was mainly split between exploring AWS Cloud services (the AWS Academy modules 6 and 7 took about two hours), gaining a deeper understanding of the Python code implementation, and writing the required answers and documentation for the assignment.
 
 ### ❓ Question 12: What challenges did you encounter, and how did you overcome them?
 
