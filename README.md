@@ -18,8 +18,12 @@ In the image below, we can see the different steps we followed to create a Lambd
 
 ### ❓ Question 2: Include screenshots of key steps and briefly explain what you learned or observed.
 
+In this task, we learn that Amazon EBS provides persistent, network-attached block storage for Amazon EC2 instances. The lifetime of an EBS volume is independent of any particular instance, which allows us to detach and reattach it as needed. EBS volumes are designed for high availability and reliability, with data automatically replicated within a single Availability Zone to ensure durability and minimize failure risk. Their Annual Failure Rate (AFR) ranges between 0.1% and 1%. We also see that EBS can be used either as a boot volume—allowing instances to be stopped and restarted without losing data—or as additional block storage. Because EBS volumes are raw, unformatted block devices, we can format and use them with any operating system. Another key concept we explore is the use of snapshots. Snapshots provide point-in-time backups of EBS volumes and are stored in Amazon S3. They are automatically replicated across multiple Availability Zones, ensuring long-term durability while using space efficiently by copying only the used storage blocks. 
 
-[Task 1 Zhehan](Zhehan)
+We learn to manage the full lifecycle of an EBS volume. We start by creating a 1 GiB General Purpose SSD (gp2) volume in the same Availability Zone as our target EC2 instance. Furthermore, we attach the new volume to the instance, connect to it via EC2 Instance Connect, and set it up on Linux. This includes creating an ext3 file system on the volume, mounting it to a directory such as /mnt/data-store, and configuring /etc/fstab so that it mounts automatically when the instance starts. To verify the setup, we add a test file named file.txt to the mounted volume. 
+
+In the next stage, we focus on backup and restoration using snapshots. We create a snapshot of the EBS volume, then delete the file.txt file to simulate data loss. To recover the data, we create a new volume from the snapshot, which we can customize by changing its type, size, or Availability Zone. After attaching this restored volume to the instance and mounting it at a new location such as /mnt/data-store2, we verify that the file.txt file is still present, confirming that the snapshot successfully preserved our data. 
+
 
 ## Task 2: Getting Started with NLTK
 ### ❓ Question 3: Add your comments to `README.md
