@@ -24,7 +24,6 @@ We learn to manage the full lifecycle of an EBS volume. We start by creating a 1
 
 In the next stage, we focus on backup and restoration using snapshots. We create a snapshot of the EBS volume, then delete the file.txt file to simulate data loss. To recover the data, we create a new volume from the snapshot, which we can customize by changing its type, size, or Availability Zone. After attaching this restored volume to the instance and mounting it at a new location such as /mnt/data-store2, we verify that the file.txt file is still present, confirming that the snapshot successfully preserved our data. 
 
-[Task 1 Zhehan](Zhehan)
 
 ## Task 2: Getting Started with NLTK
 ### ❓ Question 3: Add your comments to `README.md
