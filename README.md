@@ -140,7 +140,7 @@ We have change the proviuos code so that it only extract 10 post and apply the c
 
 After executing [BlueSky_3.py](BlueSky/BlueSky_3.py), we can observe that "@", "#" and "emotions" are tokenized correctly. 
 
-Outout of BlueSky_3.py:
+Output of BlueSky_3.py:
 ```
 INFO:httpx:HTTP Request: POST https://bsky.social/xrpc/com.atproto.server.createSession "HTTP/1.1 200 OK"
 INFO:httpx:HTTP Request: GET https://pholiota.us-west.host.bsky.network/xrpc/app.bsky.actor.getProfile?actor=zhehan02.bsky.social "HTTP/1.1 200 OK"
