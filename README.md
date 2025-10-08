@@ -154,6 +154,6 @@ INFO:httpx:HTTP Request: GET https://pholiota.us-west.host.bsky.network/xrpc/app
 To complete the activities in this lab, we dedicated roughly 4 hours in total. This time was mainly split between exploring AWS Cloud services (the AWS Academy modules 6 and 7 took about two hours), gaining a deeper understanding of the Python code implementation, and writing the required answers and documentation for the assignment.
 
 ### ❓ Question 12: What challenges did you encounter, and how did you overcome them?
-
+The taks were very clear and it provided example codes that helped a lot. We did not encounter any big chanllenge, the main chanllenge we encounter may be the time consumption.
 
 
