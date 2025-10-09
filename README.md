@@ -1,6 +1,6 @@
 # 2026_1-3-13
 ## Team Members
-- ALexandra Olivares
+- Alexandra Olivares
 - Pol Plana
 
 ## Task 1: Expand Your AWS Cloud Knowledge
