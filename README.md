@@ -4,15 +4,18 @@
 - Pol Plana
 
 ## Task 1: Expand Your AWS Cloud Knowledge
-### ❓ Question 1: Include screenshots of key steps and briefly explain what you learned or observed.
+### ❓ Question 1 [Module 8 – Databases]: Include screenshots of key steps and briefly explain what you learned or observed.
 
-### ❓ Question 2: Include screenshots of key steps and briefly explain what you learned or observed.
+### ❓ Question 2 [Module 9 – Cloud Architecture]: Include screenshots of key steps and briefly explain what you learned or observed.
 
-### ❓ Question 3: Include screenshots of key steps and briefly explain what you learned or observed.
+### ❓ Question 3 [Module 10 – Auto Scaling and Monitoring]: Include screenshots of key steps and briefly explain what you learned or observed.
 
 
 ## Task 2: Extract Images from a Website
 ### ❓ Question 4: Reflect on the tasks above. What did you find interesting or challenging? Share your thoughts.
+>
+> Es interesante cómo se puede obtener información de distintas páginas, seleccionando exactamente lo que se desea para analizarlo posteriormente de forma adecuada.
+>
 
 ## Task 3: Obtain Insights About an Image Using AWS Rekognition
 ### ❓ Question 5: Share your thoughts about the Rekognition demo. What did you observe? Was anything surprising or particularly useful?
