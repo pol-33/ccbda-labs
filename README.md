@@ -5,7 +5,20 @@
 
 ## Task 1: Expand Your AWS Cloud Knowledge
 ### ❓ Question 1 [Module 8 – Databases]: Include screenshots of key steps and briefly explain what you learned or observed.
-
+>I learned how to provision a managed database in AWS using RDS, configure networking with subnet groups, and securely connect the database to an EC2-hosted application.
+>
+>First screenshot: Shows the database creation process, where I selected the Standard create method and chose MySQL as the database engine.
+>
+>![createDB](img/creardb-mod8.png)
+>
+>Second screenshot: Displays the DB subnet group configuration, where I defined multiple subnets across different availability zones to ensure high availability and proper network setup.
+>
+>![createSubG](img/creardb-subGroup.png)
+>
+>Final screenshot: Shows the web interface of the PHP application successfully connected to the RDS database. I was able to view, edit, and add records, confirming that the integration between EC2 and RDS was working correctly.
+>
+>![muestraDB](img/accesodb-mod8.png)
+>
 ### ❓ Question 2 [Module 9 – Cloud Architecture]: Include screenshots of key steps and briefly explain what you learned or observed.
 
 ### ❓ Question 3 [Module 10 – Auto Scaling and Monitoring]: Include screenshots of key steps and briefly explain what you learned or observed.
