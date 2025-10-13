@@ -14,6 +14,9 @@
 >Second screenshot: Displays the DB subnet group configuration, where I defined multiple subnets across different availability zones to ensure high availability and proper network setup.
 >
 >![createSubG](img/creardb-subGroup.png)
+
+>Third screenshot: Illustrates the creation of an Aurora RDS instance, showcasing the options for selecting the instance type and configuring the database settings.
+![aurora](img/AuroraRDSLaunch.png)
 >
 >Final screenshot: Shows the web interface of the PHP application successfully connected to the RDS database. I was able to view, edit, and add records, confirming that the integration between EC2 and RDS was working correctly.
 >
@@ -21,7 +24,18 @@
 >
 ### ❓ Question 2 [Module 9 – Cloud Architecture]: Include screenshots of key steps and briefly explain what you learned or observed.
 
+We consider this module the easiest one of the course, but this doesn't mean it is not as important as the others. In this module, we learned about the pillars of the AWS Well-Architecture Framework, which are essential for designing and operating operational excellent, reliable, secure, performance efficient, cost-effective, and sustainable systems in the cloud. The module consisted on watching a video explaining each pillar in detail, along with best practices and contexts, which helped us understand how to apply these principles when architecting solutions on AWS.
+
+In the image below, we can see the pillars, that include Operational Excellence, Security, Reliability, Performance Efficiency, Cost Optimization, and Sustainability.
+
+![pillars](img/Module9SlideIntro.png)
+
 ### ❓ Question 3 [Module 10 – Auto Scaling and Monitoring]: Include screenshots of key steps and briefly explain what you learned or observed.
+This is the last module of the course, and I found it very interesting because it focuses on monitoring and auto-scaling, which are crucial for maintaining application performance and reliability in the cloud. It is very intersting how with a small effort, you can set up automatic scaling to handle varying loads, ensuring that your application remains responsive without manual intervention. We used CloudWatch to monitor our application's performance and set up alarms to trigger scaling actions. Then with EC2 Auto Scaling, we configured policies to automatically adjust the number of instances based on demand.
+
+In the image below, you can see a video explaining the load balancing principles, concepts, and use cases.
+
+![Module10Video](img/Module10Video.png)
 
 
 ## Task 2: Extract Images from a Website
