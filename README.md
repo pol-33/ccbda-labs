@@ -47,6 +47,74 @@ In the image below, you can see a video explaining the load balancing principles
 ## Task 3: Obtain Insights About an Image Using AWS Rekognition
 ### ❓ Question 5: Share your thoughts about the Rekognition demo. What did you observe? Was anything surprising or particularly useful?
 
+> We found the Rekognition demo to be quite impressive in its ability to analyze images and provide detailed insights. Below, we list the different tools we tried in the demo and our observations for each one.
+
+#### Label Detection
+**Image 1 - Default tool image:** We found it surprising that a man with a skateboard in a very strange position is very well detected, and even people and cars from the background are detected, including wheels, even when being very small.
+
+![Label Detection](img/Question5Images/1_DeteccióEtiquetes.png)
+
+**Image 2 - UPC lab image:** We used an image from the UPC scrapped list showing a lab with two women. We found a very good detection of both the scene (lab is detected), elements, and people. However, there is one error with one of the women being detected as a man with very high certainty, showing it is very good, but not infallible.
+
+![Label Detection UPC](img/Question5Images/2_DeteccióEtiquetesUPC.png)
+
+**Image 3 - JSON response:** Within the tools, we can see how the response types are made. We can see a JSON with Name: Female, Confidence, Instances (with the box situating them and individual confidence), Parents (Name: person). The "parents" relationship is particularly interesting, as it shows how the system categorizes items hierarchically, which can be useful for understanding broader categories and relationships between detected objects. This also makes us reflect on how the system could be implemented for more complex scenarios, where understanding the relationships between objects is crucial.
+
+![Label Detection JSON](img/Question5Images/3_DeteccióEtiquetesJSON.png)
+
+#### Image Properties
+**Images 4 & 5 - UPC images:** Images found in the UPC scraping, showing the first one a range of blues and greens degradate. The second one is an image that is entirely blue, showing different tones.
+
+![Image Properties](img/Question5Images/4_PropietatsImatge.png)
+![Image Properties](img/Question5Images/5_PropietatsImatge.png)
+
+#### Image Moderation
+**Image 6 - Bikini image:** Non-nudity image of a woman on the beach, doing yoga in a bikini. It is detected as non-explicit but categorized as underwear.
+
+![Image Moderation](img/Question5Images/6_ModeracióImatgesNoiaPlatja.png)
+
+**Image 7 - Animated content:** The same tool but in this case no moderation labels were found, however the type of content is seen as "animated".
+
+![Content Type Animated](img/Question5Images/7_ModeracióImatgesContentTypeAnimated.png)
+
+#### Face Detection
+**Image 8 - UPC language image:** An image from UPC language showing 3 people. All of them have been identified and we can see an output for each face. Each face shows information such as the certainty for: looks like a face, appears to be male, age range, smiling, appears to be happy, not wearing glasses, not wearing sunglasses, eyes are open, mouth is open. We think this is very useful information, and it is surprising how well it works, even when the faces are not very large in the image. We have tried images were the face is sideways or partially covered, and it still works quite well.
+
+![Facial Detection](img/Question5Images/8_DeteccióFacial.png)
+
+#### Face Comparison
+**Image 9 - Age comparison:** Default image by the tool, where we can see how two people compare in two images, seeing if a person is the same (even when they have different ages as in the image).
+
+![Face Comparison](img/Question5Images/9_ComparacióRostres.png)
+
+#### Face Liveness
+**Image 10 - Liveness test:** We tried this new feature, which required us to record our face in real-time. It is very similar to the kind of verification that some banks use to verify the identity of a person. We found it very interesting, as it is a very useful tool for security and fraud prevention.
+
+![Face Liveness](img/Question5Images/10_FaceLiveness.png)
+
+**Image 11 - Liveness result:** In the end, it was completed with a 99.12% confidence that the user is really in front of the camera, and not a fake video.
+
+![Face Liveness Result](img/Question5Images/11_FaceLivenessResult.png)
+
+#### Celebrity Detection
+**Image 12 - Rosalía:** Rosalía's image being detected with her face and a 99.9% confidence.
+
+![Celebrity Recognition](img/Question5Images/12_ReconoixementFamosos.png)
+
+**Image 13 - UPC Rectors (failed detection):** We tried with much less famous people, but still public figures, in this case the last two UPC rectors. The system found a coincidence, but it was incorrect. Despite this, as we see in the image, the rector Francesc Torres was detected as Phillip Green. We can see that when we look up an image of Phillip Green, the physiological similarity with the rector is very high! This surprised us, even when it is a fail.
+
+![Celebrity Recognition Failed](img/Question5Images/13_ReconeixementFamososFallit.png)
+
+#### Text Detection
+**Image 14 - UPC text:** Detection of UPC name text in an image. We have also tried with other images with text that has occlusions, different angles, and different lighting conditions, and it still works quite well. Despite that, we must note that in case of occlusions it returns a literal transcription of what it sees, which can lead to errors. This is understandable, as it is literally reading what it sees, but it is something to keep in mind (specific tools might want to apply a post-processing step).
+
+![Text in Image](img/Question5Images/14_TextImatge.png)
+
+#### PPE Detection (EPI in Catalan)
+**Image 15 - Lab safety equipment:** Detection of hand cover (gloves) on a woman from a picture of a UPC lab. It also detects that she has an element on her face (glasses).
+
+![PPE Detection](img/Question5Images/15_DeteccióEPI.png)
+
 ### ❓ Question 6: What differences or similarities did you find between the JSON output and the console demo? Which one provides more usable information, and why?
 
 
