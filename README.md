@@ -117,6 +117,536 @@ In the image below, you can see a video explaining the load balancing principles
 
 ### ❓ Question 6: What differences or similarities did you find between the JSON output and the console demo? Which one provides more usable information, and why?
 
+Here we can see the json obtain by the python script
+
+```json
+{
+    "Labels": [
+        {
+            "Name": "Grass",
+            "Confidence": 99.98262786865234,
+            "Instances": [],
+            "Parents": [
+                {
+                    "Name": "Plant"
+                }
+            ],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Plants and Flowers"
+                }
+            ]
+        },
+        {
+            "Name": "Plant",
+            "Confidence": 99.98262786865234,
+            "Instances": [],
+            "Parents": [],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Plants and Flowers"
+                }
+            ]
+        },
+        {
+            "Name": "Person",
+            "Confidence": 99.39205932617188,
+            "Instances": [
+                {
+                    "BoundingBox": {
+                        "Width": 0.0834556296467781,
+                        "Height": 0.44144827127456665,
+                        "Left": 0.5763291716575623,
+                        "Top": 0.5035720467567444
+                    },
+                    "Confidence": 99.39205932617188
+                },
+                {
+                    "BoundingBox": {
+                        "Width": 0.09640753269195557,
+                        "Height": 0.4380345046520233,
+                        "Left": 0.36009639501571655,
+                        "Top": 0.5089521408081055
+                    },
+                    "Confidence": 99.00366973876953
+                },
+                {
+                    "BoundingBox": {
+                        "Width": 0.06698541343212128,
+                        "Height": 0.4023207426071167,
+                        "Left": 0.5229027271270752,
+                        "Top": 0.5449785590171814
+                    },
+                    "Confidence": 98.71110534667969
+                },
+                {
+                    "BoundingBox": {
+                        "Width": 0.08391927927732468,
+                        "Height": 0.3963219225406647,
+                        "Left": 0.44540902972221375,
+                        "Top": 0.5455851554870605
+                    },
+                    "Confidence": 98.47283935546875
+                }
+            ],
+            "Parents": [],
+            "Aliases": [
+                {
+                    "Name": "Human"
+                }
+            ],
+            "Categories": [
+                {
+                    "Name": "Person Description"
+                }
+            ]
+        },
+        {
+            "Name": "Architecture",
+            "Confidence": 96.7999267578125,
+            "Instances": [],
+            "Parents": [],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Buildings and Architecture"
+                }
+            ]
+        },
+        {
+            "Name": "Building",
+            "Confidence": 96.7999267578125,
+            "Instances": [],
+            "Parents": [
+                {
+                    "Name": "Architecture"
+                }
+            ],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Buildings and Architecture"
+                }
+            ]
+        },
+        {
+            "Name": "College",
+            "Confidence": 96.7999267578125,
+            "Instances": [],
+            "Parents": [
+                {
+                    "Name": "Architecture"
+                },
+                {
+                    "Name": "Building"
+                }
+            ],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Education"
+                }
+            ]
+        },
+        {
+            "Name": "Clothing",
+            "Confidence": 89.816650390625,
+            "Instances": [],
+            "Parents": [],
+            "Aliases": [
+                {
+                    "Name": "Apparel"
+                }
+            ],
+            "Categories": [
+                {
+                    "Name": "Apparel and Accessories"
+                }
+            ]
+        },
+        {
+            "Name": "Footwear",
+            "Confidence": 89.816650390625,
+            "Instances": [],
+            "Parents": [
+                {
+                    "Name": "Clothing"
+                }
+            ],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Apparel and Accessories"
+                }
+            ]
+        },
+        {
+            "Name": "Shoe",
+            "Confidence": 89.816650390625,
+            "Instances": [
+                {
+                    "BoundingBox": {
+                        "Width": 0.034497618675231934,
+                        "Height": 0.038346558809280396,
+                        "Left": 0.41538968682289124,
+                        "Top": 0.8944715261459351
+                    },
+                    "Confidence": 89.816650390625
+                },
+                {
+                    "BoundingBox": {
+                        "Width": 0.031800657510757446,
+                        "Height": 0.03026428259909153,
+                        "Left": 0.624544620513916,
+                        "Top": 0.9130716323852539
+                    },
+                    "Confidence": 81.16217041015625
+                }
+            ],
+            "Parents": [
+                {
+                    "Name": "Clothing"
+                },
+                {
+                    "Name": "Footwear"
+                }
+            ],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Apparel and Accessories"
+                }
+            ]
+        },
+        {
+            "Name": "Lawn",
+            "Confidence": 89.8125228881836,
+            "Instances": [],
+            "Parents": [
+                {
+                    "Name": "Grass"
+                },
+                {
+                    "Name": "Plant"
+                }
+            ],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Home and Indoors"
+                }
+            ]
+        }
+    ],
+    "LabelModelVersion": "3.0",
+    "ResponseMetadata": {
+        "RequestId": "bd777b4e-154d-4b49-bf82-5882f4be7f74",
+        "HTTPStatusCode": 200,
+        "HTTPHeaders": {
+            "x-amzn-requestid": "bd777b4e-154d-4b49-bf82-5882f4be7f74",
+            "content-type": "application/x-amz-json-1.1",
+            "content-length": "2551",
+            "date": "Tue, 14 Oct 2025 20:16:25 GMT"
+        },
+        "RetryAttempts": 0
+    }
+}
+        "RequestId": "bd777b4e-154d-4b49-bf82-5882f4be7f74",
+        "HTTPStatusCode": 200,
+        "HTTPHeaders": {
+            "x-amzn-requestid": "bd777b4e-154d-4b49-bf82-5882f4be7f74",
+            "content-type": "application/x-amz-json-1.1",
+            "content-length": "2551",
+        "RequestId": "bd777b4e-154d-4b49-bf82-5882f4be7f74",
+        "HTTPStatusCode": 200,
+        "HTTPHeaders": {
+        "RequestId": "bd777b4e-154d-4b49-bf82-5882f4be7f74",
+        "RequestId": "bd777b4e-154d-4b49-bf82-5882f4be7f74", 
+        "HTTPStatusCode": 200,
+        "HTTPHeaders": {
+            "x-amzn-requestid": "bd777b4e-154d-4b49-bf82-5882f4be7f74",
+            "content-type": "application/x-amz-json-1.1",    
+            "content-length": "2551",
+            "date": "Tue, 14 Oct 2025 20:16:25 GMT"
+        },
+        "RetryAttempts": 0
+    }
+}
+```
+And here we can see the json obtein by the console, with the same picture as the python script.
+
+```json
+{
+    "Labels": [
+        {
+            "Name": "Grass",
+            "Confidence": 99.98262786865234,
+            "Instances": [],
+            "Parents": [
+                {
+                    "Name": "Plant"
+                }
+            ],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Plants and Flowers"
+                }
+            ]
+        },
+        {
+            "Name": "Plant",
+            "Confidence": 99.98262786865234,
+            "Instances": [],
+            "Parents": [],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Plants and Flowers"
+                }
+            ]
+        },
+        {
+            "Name": "Person",
+            "Confidence": 99.39205932617188,
+            "Instances": [
+                {
+                    "BoundingBox": {
+                        "Width": 0.0834556296467781,
+                        "Height": 0.44144827127456665,
+                        "Left": 0.5763291716575623,
+                        "Top": 0.5035720467567444
+                    },
+                    "Confidence": 99.39205932617188
+                },
+                {
+                    "BoundingBox": {
+                        "Width": 0.09640753269195557,
+                        "Height": 0.4380345046520233,
+                        "Left": 0.36009639501571655,
+                        "Top": 0.5089521408081055
+                    },
+                    "Confidence": 99.00366973876953
+                },
+                {
+                    "BoundingBox": {
+                        "Width": 0.06698541343212128,
+                        "Height": 0.4023207426071167,
+                        "Left": 0.5229027271270752,
+                        "Top": 0.5449785590171814
+                    },
+                    "Confidence": 98.71110534667969
+                },
+                {
+                    "BoundingBox": {
+                        "Width": 0.08391927927732468,
+                        "Height": 0.3963219225406647,
+                        "Left": 0.44540902972221375,
+                        "Top": 0.5455851554870605
+                    },
+                    "Confidence": 98.47283935546875
+                }
+            ],
+            "Parents": [],
+            "Aliases": [
+                {
+                    "Name": "Human"
+                }
+            ],
+            "Categories": [
+                {
+                    "Name": "Person Description"
+                }
+            ]
+        },
+        {
+            "Name": "Architecture",
+            "Confidence": 96.7999267578125,
+            "Instances": [],
+            "Parents": [],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Buildings and Architecture"
+                }
+            ]
+        },
+        {
+            "Name": "Building",
+            "Confidence": 96.7999267578125,
+            "Instances": [],
+            "Parents": [
+                {
+                    "Name": "Architecture"
+                }
+            ],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Buildings and Architecture"
+                }
+            ]
+        },
+        {
+            "Name": "College",
+            "Confidence": 96.7999267578125,
+            "Instances": [],
+            "Parents": [
+                {
+                    "Name": "Architecture"
+                },
+                {
+                    "Name": "Building"
+                }
+            ],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Education"
+                }
+            ]
+        },
+        {
+            "Name": "Clothing",
+            "Confidence": 89.816650390625,
+            "Instances": [],
+            "Parents": [],
+            "Aliases": [
+                {
+                    "Name": "Apparel"
+                }
+            ],
+            "Categories": [
+                {
+                    "Name": "Apparel and Accessories"
+                }
+            ]
+        },
+        {
+            "Name": "Footwear",
+            "Confidence": 89.816650390625,
+            "Instances": [],
+            "Parents": [
+                {
+                    "Name": "Clothing"
+                }
+            ],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Apparel and Accessories"
+                }
+            ]
+        },
+        {
+            "Name": "Shoe",
+            "Confidence": 89.816650390625,
+            "Instances": [
+                {
+                    "BoundingBox": {
+                        "Width": 0.034497618675231934,
+                        "Height": 0.038346558809280396,
+                        "Left": 0.41538968682289124,
+                        "Top": 0.8944715261459351
+                    },
+                    "Confidence": 89.816650390625
+                },
+                {
+                    "BoundingBox": {
+                        "Width": 0.031800657510757446,
+                        "Height": 0.03026428259909153,
+                        "Left": 0.624544620513916,
+                        "Top": 0.9130716323852539
+                    },
+                    "Confidence": 81.16217041015625
+                }
+            ],
+            "Parents": [
+                {
+                    "Name": "Clothing"
+                },
+                {
+                    "Name": "Footwear"
+                }
+            ],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Apparel and Accessories"
+                }
+            ]
+        },
+        {
+            "Name": "Lawn",
+            "Confidence": 89.8125228881836,
+            "Instances": [],
+            "Parents": [
+                {
+                    "Name": "Grass"
+                },
+                {
+                    "Name": "Plant"
+                }
+            ],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Home and Indoors"
+                }
+            ]
+        },
+        {
+            "Name": "Landmark",
+            "Confidence": 59.97163772583008,
+            "Instances": [],
+            "Parents": [],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Popular Landmarks"
+                }
+            ]
+        },
+        {
+            "Name": "Tree",
+            "Confidence": 57.618309020996094,
+            "Instances": [],
+            "Parents": [
+                {
+                    "Name": "Plant"
+                }
+            ],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Nature and Outdoors"
+                }
+            ]
+        },
+        {
+            "Name": "Vegetation",
+            "Confidence": 55.13107681274414,
+            "Instances": [],
+            "Parents": [
+                {
+                    "Name": "Plant"
+                }
+            ],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Nature and Outdoors"
+                }
+            ]
+        }
+    ],
+    "LabelModelVersion": "3.0"
+}
+```
+We compared these and other examples and found that the console surfaces more labels overall, but many of them have lower confidence scores. In contrast, the Python output is more conservative, returning fewer labels with higher confidence. As a result, the Python results are better suited for reliable, production-grade analysis, while the console view is handy for exploratory inspection where breadth matters more than precision.
+
 
 ## Task 4: Get Insights From Website Images Using AWS Rekognition
 ### ❓ Question 7: What is the goal of your image analysis application? (E.g., detecting objects, filtering inappropriate content, facial recognition, etc.)
