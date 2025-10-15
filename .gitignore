@@ -80,6 +80,9 @@ celerybeat-schedule
 # dotenv
 .env
 
+# AWS Rekognition results (contains analyzed data)
+rekognition_results/
+
 # virtualenv
 venv/
 ENV/
