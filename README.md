@@ -718,6 +718,17 @@ We compared these and other examples and found that the console surfaces more la
 
 ### ❓ Question 10: Using the AWS Billing and Cost Management Service, access the "Cost Explorer" and capture the cost of last week Using the "Dimension" "Service" where you can see how much did you spend to complete the session in total and per service.
 
-### ❓ Question 10: What challenges did you encounter, and how did you overcome them?
+> **Total cost for this lab session: $0.07 USD**
+It must be noted that the cost does not reflect the actual usage of the day, as AWS billing updates with a delay. However, we can see that the cost is very low, which is expected given that we stayed within the free tier limits for Rekognition usage. In fact, the free tier allows for 5,000 images per month, and we only approximately 500 images in total.
+>
+> We accessed the AWS Billing and Cost Management dashboard to review our usage and costs. The analysis shows:
+> ![Billing Dashboard](img/billing_dashboard.png)
+> Note that if we selected the "Last 7 days" option, the cost appears as $0.00, so we opted to include the monthly view that shows the $0.07 cost. Even though the cost is low, it is clearly not reflecting the actual usage of the day 15th October.
+>
+>We also included some additional screenshots showing the different Rekognition metrics available in AWS CloudWatch for the last days:
+> ![Rekognition Metrics](img/rekognition_metrics.png)
+
+
+### ❓ Question 11: What challenges did you encounter, and how did you overcome them?
 
 
