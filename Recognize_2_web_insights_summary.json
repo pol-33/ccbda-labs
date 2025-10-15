@@ -1,0 +1,741 @@
+{
+    "total_images_analyzed": 485,
+    "total_unique_labels": 458,
+    "pages_analyzed": 44,
+    "top_labels": [
+        {
+            "label": "Person",
+            "occurrences": 205,
+            "avg_confidence": 97.27690347811071
+        },
+        {
+            "label": "Adult",
+            "occurrences": 134,
+            "avg_confidence": 97.57859762391048
+        },
+        {
+            "label": "Male",
+            "occurrences": 92,
+            "avg_confidence": 97.50063257632048
+        },
+        {
+            "label": "Man",
+            "occurrences": 89,
+            "avg_confidence": 97.50159325760401
+        },
+        {
+            "label": "People",
+            "occurrences": 84,
+            "avg_confidence": 96.16554441906158
+        },
+        {
+            "label": "Text",
+            "occurrences": 71,
+            "avg_confidence": 85.46849231988611
+        },
+        {
+            "label": "Woman",
+            "occurrences": 67,
+            "avg_confidence": 97.84492435740002
+        },
+        {
+            "label": "Female",
+            "occurrences": 65,
+            "avg_confidence": 97.78372485821063
+        },
+        {
+            "label": "Electronics",
+            "occurrences": 52,
+            "avg_confidence": 92.67879676818848
+        },
+        {
+            "label": "Outdoors",
+            "occurrences": 49,
+            "avg_confidence": 88.4839234644053
+        }
+    ],
+    "pages": {
+        "https://www.upc.edu/en/": {
+            "image_count": 210,
+            "unique_labels": 103,
+            "top_labels": [
+                "Monitor",
+                "Female",
+                "Microwave",
+                "Sunglasses",
+                "Chair",
+                "Server",
+                "Person",
+                "Phone",
+                "Fruit",
+                "Home Decor"
+            ]
+        },
+        "https://www.upc.edu/en/other-courses/summer-courses": {
+            "image_count": 74,
+            "unique_labels": 54,
+            "top_labels": [
+                "Electronics",
+                "Machine",
+                "Scoreboard",
+                "Monitor",
+                "Moon",
+                "Bracelet",
+                "Razor",
+                "Man",
+                "Envelope",
+                "Game"
+            ]
+        },
+        "https://www.upc.edu/en/lifelong-learning": {
+            "image_count": 6,
+            "unique_labels": 6,
+            "top_labels": [
+                "Texture",
+                "Interior Design",
+                "Aluminium",
+                "Pattern",
+                "Indoors",
+                "Steel"
+            ]
+        },
+        "https://www.upc.edu/en/masters/news-masters-2025-2026": {
+            "image_count": 40,
+            "unique_labels": 35,
+            "top_labels": [
+                "Shoe",
+                "Electronics",
+                "Monitor",
+                "Female",
+                "Street",
+                "Man",
+                "Clothing",
+                "Plant",
+                "Architecture",
+                "City"
+            ]
+        },
+        "https://www.upc.edu/en/masters/mobility-and-work-placement": {
+            "image_count": 20,
+            "unique_labels": 15,
+            "top_labels": [
+                "Conversation",
+                "Electronics",
+                "Pc",
+                "Person",
+                "Reading",
+                "Adult",
+                "Laptop",
+                "Bag",
+                "Handbag",
+                "Book"
+            ]
+        },
+        "https://www.upc.edu/en/masters/academic-calendar-and-academic-regulations": {
+            "image_count": 12,
+            "unique_labels": 12,
+            "top_labels": [
+                "Symbol",
+                "Nature",
+                "Night",
+                "Hole",
+                "Disk",
+                "Astronomy",
+                "Moon",
+                "Reel",
+                "Sign",
+                "Outdoors"
+            ]
+        },
+        "https://www.upc.edu/en/why-take-a-masters-degree-at-the-upc": {
+            "image_count": 65,
+            "unique_labels": 36,
+            "top_labels": [
+                "Shoe",
+                "Sitting",
+                "T-Shirt",
+                "Smile",
+                "Laptop",
+                "Female",
+                "Poster",
+                "Dynamite",
+                "Man",
+                "Purple"
+            ]
+        },
+        "https://www.upc.edu/en/masters/": {
+            "image_count": 10,
+            "unique_labels": 10,
+            "top_labels": [
+                "Neon",
+                "Accessories",
+                "Weapon",
+                "Dynamite",
+                "Light",
+                "Outdoors",
+                "Pattern",
+                "Tie",
+                "Formal Wear",
+                "Home Decor"
+            ]
+        },
+        "https://www.upc.edu/en/bachelors/mobility-and-work-placement": {
+            "image_count": 4,
+            "unique_labels": 4,
+            "top_labels": [
+                "Lighting",
+                "Pattern",
+                "Electronics",
+                "Accessories"
+            ]
+        },
+        "https://www.upc.edu/en/en/r-d-i/r-d-news": {
+            "image_count": 51,
+            "unique_labels": 41,
+            "top_labels": [
+                "Plot",
+                "Electronics",
+                "Chart",
+                "Lamp",
+                "Pc",
+                "Machine",
+                "Hat",
+                "Laptop",
+                "Man",
+                "Clothing"
+            ]
+        },
+        "https://www.upc.edu/slt/en/courses-and-certificates/learn-english": {
+            "image_count": 19,
+            "unique_labels": 17,
+            "top_labels": [
+                "Advertisement",
+                "Meal",
+                "Lunch",
+                "Head",
+                "Person",
+                "People",
+                "Collage",
+                "Reading",
+                "Reel",
+                "Logo"
+            ]
+        },
+        "https://www.upc.edu/comunicacio/ca/identitat": {
+            "image_count": 3,
+            "unique_labels": 3,
+            "top_labels": [
+                "Text",
+                "Logo",
+                "Reel"
+            ]
+        },
+        "https://www.upc.edu/identitatdigital/ca": {
+            "image_count": 36,
+            "unique_labels": 26,
+            "top_labels": [
+                "Electronics",
+                "Pc",
+                "Laptop",
+                "Female",
+                "Jigsaw Puzzle",
+                "Clothing",
+                "Animal",
+                "Man",
+                "Bird",
+                "Game"
+            ]
+        },
+        "https://www.upc.edu/sri/en/mobility_office": {
+            "image_count": 13,
+            "unique_labels": 12,
+            "top_labels": [
+                "Tile",
+                "Modern Art",
+                "Electronics",
+                "Mosaic",
+                "Weapon",
+                "Scoreboard",
+                "Blade",
+                "Reel",
+                "Phone",
+                "Mobile Phone"
+            ]
+        },
+        "https://www.upc.edu/en/university-life-and-services/accommodation": {
+            "image_count": 9,
+            "unique_labels": 9,
+            "top_labels": [
+                "Table",
+                "Bed",
+                "Interior Design",
+                "Home Decor",
+                "Furniture",
+                "Bedroom",
+                "Room",
+                "Dorm Room",
+                "Indoors"
+            ]
+        },
+        "https://www.upc.edu/en/the-upc/structure-and-organisation": {
+            "image_count": 6,
+            "unique_labels": 6,
+            "top_labels": [
+                "Electronics",
+                "Disk",
+                "Ipod",
+                "Texture",
+                "Light",
+                "Pattern"
+            ]
+        },
+        "https://www.upc.edu/en/university-life-and-services/govern-and-participation": {
+            "image_count": 40,
+            "unique_labels": 23,
+            "top_labels": [
+                "Seminar",
+                "Pc",
+                "Laptop",
+                "Female",
+                "Indoors",
+                "Man",
+                "Person",
+                "People",
+                "Adult",
+                "Desk"
+            ]
+        },
+        "https://www.upc.edu/ranquings/es": {
+            "image_count": 64,
+            "unique_labels": 45,
+            "top_labels": [
+                "Electronics",
+                "Chart",
+                "Scoreboard",
+                "Indoors",
+                "Plant",
+                "City",
+                "Architecture",
+                "Server",
+                "Purple",
+                "Person"
+            ]
+        },
+        "https://www.upc.edu/en/the-upc/the-institution/the-institution": {
+            "image_count": 139,
+            "unique_labels": 70,
+            "top_labels": [
+                "Glove",
+                "Conversation",
+                "Plot",
+                "House",
+                "T-Shirt",
+                "Chart",
+                "Smile",
+                "Pc",
+                "Machine",
+                "Plywood"
+            ]
+        },
+        "https://www.upc.edu/slt/en": {
+            "image_count": 94,
+            "unique_labels": 42,
+            "top_labels": [
+                "Hair",
+                "Hat",
+                "Boy",
+                "Female",
+                "Poster",
+                "Man",
+                "College",
+                "Suit",
+                "Sky",
+                "Cap"
+            ]
+        },
+        "https://www.upc.edu/en/hrs4r": {
+            "image_count": 25,
+            "unique_labels": 25,
+            "top_labels": [
+                "Glove",
+                "House",
+                "Machine",
+                "Female",
+                "Engine",
+                "Clothing",
+                "Architecture",
+                "City",
+                "Tire",
+                "Person"
+            ]
+        },
+        "https://www.upc.edu/en/the-upc/the-institution/facts-figures/facts-figures": {
+            "image_count": 21,
+            "unique_labels": 19,
+            "top_labels": [
+                "House",
+                "Staircase",
+                "Architecture",
+                "Handrail",
+                "Reel",
+                "Logo",
+                "Nature",
+                "Symbol",
+                "Disk",
+                "Housing"
+            ]
+        },
+        "https://www.upc.edu/en/press-room/news": {
+            "image_count": 241,
+            "unique_labels": 105,
+            "top_labels": [
+                "CAD Diagram",
+                "Holding Hands",
+                "T-Shirt",
+                "Pc",
+                "Diagram",
+                "Female",
+                "Staircase",
+                "Sky",
+                "Chair",
+                "Person"
+            ]
+        },
+        "https://www.upc.edu/esports/ca": {
+            "image_count": 128,
+            "unique_labels": 67,
+            "top_labels": [
+                "Bicep Curls",
+                "Necklace",
+                "Shoe",
+                "Yacht",
+                "T-Shirt",
+                "Sailboat",
+                "Boy",
+                "Female",
+                "Poster",
+                "Footwear"
+            ]
+        },
+        "https://www.upc.edu/en/press-room/news/leonardo-grants-awarded-to-upc-researchers-ines-aquilue-gissell-estrada-and-juan-murcia": {
+            "image_count": 27,
+            "unique_labels": 20,
+            "top_labels": [
+                "Hair",
+                "Braid",
+                "Smile",
+                "Female",
+                "Bracelet",
+                "Man",
+                "Clothing",
+                "Shirt",
+                "Person",
+                "Adult"
+            ]
+        },
+        "https://www.upc.edu/en/press-room/news/upc-opens-academic-year-by-invoking-the-power-of-imagination": {
+            "image_count": 40,
+            "unique_labels": 23,
+            "top_labels": [
+                "Music",
+                "Shoe",
+                "High Heel",
+                "Hat",
+                "Female",
+                "Man",
+                "Musical Instrument",
+                "Chair",
+                "Musician",
+                "Microphone"
+            ]
+        },
+        "https://www.upc.edu/transparencia/ca/publicitat-activa/informacio-economica-i-pressupostaria/informacio-economica-i-pressupostaria": {
+            "image_count": 17,
+            "unique_labels": 17,
+            "top_labels": [
+                "Nature",
+                "Clam",
+                "Electronics",
+                "Sea Life",
+                "Accessories",
+                "Water",
+                "Computer Keyboard",
+                "Hardware",
+                "Reel",
+                "Ice"
+            ]
+        },
+        "https://www.upc.edu/en/unite": {
+            "image_count": 68,
+            "unique_labels": 43,
+            "top_labels": [
+                "Document",
+                "Electronics",
+                "Chart",
+                "Tablet Computer",
+                "Pc",
+                "Scoreboard",
+                "Venn Diagram",
+                "Diagram",
+                "Monitor",
+                "Laptop"
+            ]
+        },
+        "https://www.upc.edu/en/the-upc/honoris-causa": {
+            "image_count": 227,
+            "unique_labels": 45,
+            "top_labels": [
+                "Electronics",
+                "Smile",
+                "Hat",
+                "Boy",
+                "Pc",
+                "Appliance",
+                "Laptop",
+                "Female",
+                "Graduation",
+                "Tie"
+            ]
+        },
+        "https://www.upc.edu/en/university-life-and-services": {
+            "image_count": 337,
+            "unique_labels": 165,
+            "top_labels": [
+                "Soccer Ball",
+                "Holding Hands",
+                "T-Shirt",
+                "Pc",
+                "Machine",
+                "Female",
+                "Footwear",
+                "Shorts",
+                "Sunglasses",
+                "Sky"
+            ]
+        },
+        "https://www.upc.edu/en/the-upc/government-and-representation": {
+            "image_count": 90,
+            "unique_labels": 56,
+            "top_labels": [
+                "Electronics",
+                "Executive",
+                "Monitor",
+                "Laptop",
+                "Female",
+                "Silhouette",
+                "Tie",
+                "Indoors",
+                "Man",
+                "White Board"
+            ]
+        },
+        "https://www.upc.edu/transparencia/ca": {
+            "image_count": 90,
+            "unique_labels": 50,
+            "top_labels": [
+                "House",
+                "Electronics",
+                "Skin",
+                "Sailboat",
+                "Earring",
+                "Calculator",
+                "Hand",
+                "Package Delivery",
+                "Man",
+                "Cross"
+            ]
+        },
+        "https://www.upc.edu/ranquings/en": {
+            "image_count": 51,
+            "unique_labels": 38,
+            "top_labels": [
+                "Electronics",
+                "Chart",
+                "Poster",
+                "Indoors",
+                "Plant",
+                "Architecture",
+                "Plastic",
+                "Server",
+                "City",
+                "Person"
+            ]
+        },
+        "https://www.upc.edu/en/the-upc/schools": {
+            "image_count": 168,
+            "unique_labels": 49,
+            "top_labels": [
+                "Condo",
+                "Plot",
+                "Intersection",
+                "Chart",
+                "Church",
+                "Tower",
+                "Diagram",
+                "Clock Tower",
+                "Atlas",
+                "Shopping Mall"
+            ]
+        },
+        "https://www.upc.edu/en/r-d-i/transfer-entrepreneurship-and-innovation-support-and-promotion": {
+            "image_count": 42,
+            "unique_labels": 32,
+            "top_labels": [
+                "Shoe",
+                "Boy",
+                "Monitor",
+                "Female",
+                "Spice",
+                "Play Area",
+                "Tie",
+                "Man",
+                "White Board",
+                "Clothing"
+            ]
+        },
+        "https://www.upc.edu/en/r-d-i/transfer-entrepreneurship-and-innovation-at-the-upc": {
+            "image_count": 41,
+            "unique_labels": 31,
+            "top_labels": [
+                "Shoe",
+                "Condo",
+                "Lounge",
+                "Footwear",
+                "Indoors",
+                "Clothing",
+                "Man",
+                "Architecture",
+                "City",
+                "Chair"
+            ]
+        },
+        "https://www.upc.edu/en/r-d-i/research-support-and-promotion": {
+            "image_count": 60,
+            "unique_labels": 40,
+            "top_labels": [
+                "Glove",
+                "Electronics",
+                "Lecture",
+                "Pc",
+                "Lamp",
+                "Laptop",
+                "Female",
+                "Lecture Hall",
+                "Indoors",
+                "Clothing"
+            ]
+        },
+        "https://www.upc.edu/en/r-d-i/research-at-the-upc": {
+            "image_count": 59,
+            "unique_labels": 40,
+            "top_labels": [
+                "Glove",
+                "Electronics",
+                "Holding Hands",
+                "Pc",
+                "Laptop",
+                "Female",
+                "Indoors",
+                "Man",
+                "Architecture",
+                "Server"
+            ]
+        },
+        "https://www.upc.edu/slt/en/courses-and-certificates/certify": {
+            "image_count": 10,
+            "unique_labels": 10,
+            "top_labels": [
+                "Portrait",
+                "Head",
+                "Happy",
+                "Person",
+                "Adult",
+                "Female",
+                "Woman",
+                "Text",
+                "Face",
+                "Photography"
+            ]
+        },
+        "https://www.upc.edu/en/bachelors/": {
+            "image_count": 51,
+            "unique_labels": 32,
+            "top_labels": [
+                "Moss",
+                "Wire",
+                "Gravestone",
+                "Honey",
+                "Tie",
+                "Dynamite",
+                "Plant",
+                "Grapefruit",
+                "Astronomy",
+                "Tomb"
+            ]
+        },
+        "https://www.upc.edu/es?set_language=es": {
+            "image_count": 222,
+            "unique_labels": 111,
+            "top_labels": [
+                "Condo",
+                "T-Shirt",
+                "Chart",
+                "Herbal",
+                "Diagram",
+                "Monitor",
+                "Female",
+                "TV",
+                "Debate",
+                "Chair"
+            ]
+        },
+        "https://www.upc.edu/ca?set_language=ca": {
+            "image_count": 242,
+            "unique_labels": 124,
+            "top_labels": [
+                "Condo",
+                "Chart",
+                "Pc",
+                "Machine",
+                "Diagram",
+                "Monitor",
+                "Female",
+                "TV",
+                "Debate",
+                "Footwear"
+            ]
+        },
+        "https://www.upc.edu/en/press-room": {
+            "image_count": 29,
+            "unique_labels": 25,
+            "top_labels": [
+                "Manufacturing",
+                "Female",
+                "Poster",
+                "Clothing",
+                "Pier",
+                "City",
+                "Architecture",
+                "Person",
+                "Adult",
+                "Coat"
+            ]
+        },
+        "https://www.upc.edu/en/companies": {
+            "image_count": 36,
+            "unique_labels": 34,
+            "top_labels": [
+                "Glove",
+                "Machine",
+                "Female",
+                "Engine",
+                "Crystal",
+                "Poster",
+                "Clothing",
+                "Architecture",
+                "Tire",
+                "Purple"
+            ]
+        }
+    }
+}

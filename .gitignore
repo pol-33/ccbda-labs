@@ -80,6 +80,15 @@ celerybeat-schedule
 # dotenv
 .env
 
+# AWS Rekognition results (contains analyzed data)
+rekognition_results/
+
+# Web insights from Recognize_2.py
+web_insights/
+
+# Downloaded images from web scraping
+downloaded_images/
+
 # virtualenv
 venv/
 ENV/
