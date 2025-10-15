@@ -121,11 +121,48 @@ In the image below, you can see a video explaining the load balancing principles
 ## Task 4: Get Insights From Website Images Using AWS Rekognition
 ### ❓ Question 7: What is the goal of your image analysis application? (E.g., detecting objects, filtering inappropriate content, facial recognition, etc.)
 
+> **Goal**: Extract insights from web images by analyzing images scraped from the UPC website using AWS Rekognition.
+>
+> The application (`Recognize_2.py`) performs the following:
+> 1. Reads image URLs from the web scraper output (`images.json`)
+> 2. Downloads images from those URLs
+> 3. Analyzes each image using AWS Rekognition's label detection
+> 4. Extracts insights about what content appears across different web pages
+> 5. Generates a summary showing the most common detected labels and patterns across the website
+>
+> This allows us to understand what type of visual content the UPC website contains (e.g., people, buildings, technology, laboratory equipment) and how images are distributed across different pages. 
+
 ### ❓ Question 8: What is the mechanism that you have created to prevent sending the same image to AWS Rekognition more than once?
+
+> We implemented a **hash-based caching system** with two different approaches:
+>
+> **For `Recognize_1.py` (local images):**
+> - Calculates an MD5 hash of the image file content
+> - Stores analyzed image hashes in `rekognition_results/analyzed_images.json`
+> - Before analyzing, checks if the file hash exists in the cache
+> - If found, skips analysis; if not, analyzes and adds hash to cache
+> - **Advantage**: Detects duplicate images even with different filenames
+>
+> **For `Recognize_2.py` (web images):**
+> - Calculates an MD5 hash of the image URL
+> - Stores analyzed URL hashes in `web_insights/analyzed_web_images.json`
+> - Before downloading/analyzing, checks if the URL hash exists in the cache
+> - If found, skips download and analysis; if not, proceeds and adds hash to cache
+> - **Advantage**: Prevents re-downloading and re-analyzing the same web resource
+>
+> **Why this approach?**
+> - **Cost-effective**: Prevents duplicate API calls to AWS Rekognition, which saves money
+> - **Efficient**: Avoids unnecessary downloads and processing
+> - **Persistent**: Cache survives between script executions
+> - **Reliable**: MD5 hashing ensures accurate duplicate detection
+>
+> The cache files can be manually deleted or modified if re-analysis is needed for specific images.
 
 
 ## Submit Your Assignment
 ### ❓ Question 9: How much time did you spend on this session?
+
+### ❓ Question 10: Using the AWS Billing and Cost Management Service, access the "Cost Explorer" and capture the cost of last week Using the "Dimension" "Service" where you can see how much did you spend to complete the session in total and per service.
 
 ### ❓ Question 10: What challenges did you encounter, and how did you overcome them?
 
