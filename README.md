@@ -716,8 +716,11 @@ We compared these and other examples and found that the console surfaces more la
 ## Submit Your Assignment
 ### ❓ Question 9: How much time did you spend on this session?
 
+In total approximate we spent approximately 12 hours over 4 days to cover all topics in depth.
+
 ### ❓ Question 10: Using the AWS Billing and Cost Management Service, access the "Cost Explorer" and capture the cost of last week Using the "Dimension" "Service" where you can see how much did you spend to complete the session in total and per service.
 
-### ❓ Question 10: What challenges did you encounter, and how did you overcome them?
-
-
+### ❓ Question 11: What challenges did you encounter, and how did you overcome them?
+>
+>Avoiding duplicate Rekognition calls: We needed a reliable way to prevent re-analyzing the same images. We implemented hash-based caches (file-content MD5 for local images; URL MD5 for web), persisted to JSON. This eliminated redundant downloads and API calls.
+>
