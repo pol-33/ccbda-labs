@@ -734,3 +734,6 @@ It must be noted that the cost does not reflect the actual usage of the day, as 
 >
 >Avoiding duplicate Rekognition calls: We needed a reliable way to prevent re-analyzing the same images. We implemented hash-based caches (file-content MD5 for local images; URL MD5 for web), persisted to JSON. This eliminated redundant downloads and API calls.
 >
+>To avoid losing information: We save one JSON file per image with the raw Rekognition response plus some metadata (source_url, appears_on, depth). Then we run an offline aggregation step that reads all those per-image JSONs and produces a website-level summary (top labels, counts, average confidence, per-page stats). This keeps the pipeline reproducible and debuggable.
+>
+>
