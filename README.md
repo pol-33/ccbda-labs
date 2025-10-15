@@ -130,7 +130,31 @@ In the image below, you can see a video explaining the load balancing principles
 > 4. Extracts insights about what content appears across different web pages
 > 5. Generates a summary showing the most common detected labels and patterns across the website
 >
-> This allows us to understand what type of visual content the UPC website contains (e.g., people, buildings, technology, laboratory equipment) and how images are distributed across different pages. 
+> This allows us to understand what type of visual content the UPC website contains (e.g., people, buildings, technology, laboratory equipment) and how images are distributed across different pages.
+>
+> **Results from our analysis:**
+>
+> We analyzed **485 images** from **44 different web pages** on the UPC website, detecting **458 unique labels** in total. The insights summary is available in `Recognize_2_web_insights_summary.json`.
+>
+> **Top 10 most detected labels across all images:**
+> 1. **Person** - 205 occurrences (97.3% avg confidence)
+> 2. **Adult** - 134 occurrences (97.6% avg confidence)
+> 3. **Male** - 92 occurrences (97.5% avg confidence)
+> 4. **Man** - 89 occurrences (97.5% avg confidence)
+> 5. **People** - 84 occurrences (96.2% avg confidence)
+> 6. **Text** - 71 occurrences (85.5% avg confidence)
+> 7. **Woman** - 67 occurrences (97.8% avg confidence)
+> 8. **Female** - 65 occurrences (97.8% avg confidence)
+> 9. **Electronics** - 52 occurrences (92.7% avg confidence)
+> 10. **Outdoors** - 49 occurrences (88.5% avg confidence)
+>
+> **Key insights:**
+> - The UPC website predominantly features **people** (students, faculty, staff) in various contexts
+> - **Educational settings** are well-represented (electronics, laptops, monitors in classrooms/labs)
+> - **Diversity** is visible with balanced detection of male and female subjects
+> - The home page (`https://www.upc.edu/en/`) contained the most images (210), showing diverse content with 103 unique labels
+> - Text detection was common, indicating many images include informational overlays or signage
+> - The insights reveal that UPC presents itself as a **people-focused, technology-enabled educational institution** 
 
 ### ❓ Question 8: What is the mechanism that you have created to prevent sending the same image to AWS Rekognition more than once?
 
