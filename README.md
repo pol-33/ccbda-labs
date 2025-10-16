@@ -728,7 +728,9 @@ It must be noted that the cost does not reflect the actual usage of the day, as 
 >
 >We also included some additional screenshots showing the different Rekognition metrics available in AWS CloudWatch for the last days:
 > ![Rekognition Metrics](img/rekognition_metrics.png)
-
+>
+Addition (16th October): We can now see the actual total cost of the practice, which is $0.38 USD.
+> ![Rekognition Metrics](img/costs16Oct.png)
 
 ### ❓ Question 11: What challenges did you encounter, and how did you overcome them?
 >
