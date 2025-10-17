@@ -17,6 +17,11 @@ We think that it is important to use the least-privilege policy for the IAM crea
 ## Task 4.4: Use AWS Simple Notification Service in your web app
 ### ❓ Question 2: Has everything gone alright? Share your thoughts on the task developed above.
 
+Overall, the integration of AWS Simple Notification Service (SNS) into our web app went smoothly. We were able to set up the necessary configurations without problems and in a very straightforward and easy way. The process of publishing messages to the SNS topic from our Django app was straightforward, and we saw how simple it was to include a service that could take days of work if implemented from scratch. 
+
+We confirmed that the messages were successfully delivered to the subscribed endpoints, as you can see in the screenshot below:
+![SNS Messages](./images/NotificationReceived.png)
+
 
 ## Task 4.5: Configure Docker
 ### ❓ Question 3: Has everything gone alright? Share your thoughts on the task developed above.
