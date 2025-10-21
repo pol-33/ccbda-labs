@@ -26,6 +26,17 @@ We confirmed that the messages were successfully delivered to the subscribed end
 ## Task 4.5: Configure Docker
 ### ❓ Question 3: Has everything gone alright? Share your thoughts on the task developed above.
 
+Yes. The Docker image built successfully (see docker image list below), and the container ran with port binding 8080:8000 and the provided --env-file. The app was reachable at http://0.0.0.0:8080/, and logs confirmed normal Django startup plus successful operations: items added to DynamoDB and SNS messages sent.
+
+![Docker Containers](./images/q3_docker_list.png)
+
+![Running App](./images/q3_running_on_0000-8080.png)
+
+![App Message Sent](./images/q3_sent.png)
+
+![SNS Messages](./images/q3_sns.png)
+
+![DynamoDB Items](./images/q3_aws_dynamodb.png)
 
 ## Task 4.6: Deploy the target web app
 ### ❓ Question 4: Share your thoughts on the task developed above.
