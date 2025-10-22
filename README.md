@@ -54,8 +54,16 @@ The deployment task went very well. We successfully transitioned from a developm
 
 ## Submit Your Assignment
 ### ❓ Question 6: How much time did you spend on this session?
-
+To complete this session, we spent approximately 7 hours in total. This time was divided among classwork, several gatherings in the library, and remote meetings.
 
 ### ❓ Question 7: What challenges did you encounter, and how did you overcome them?
 
+The main challenge we encountered was understanding Docker and how to properly configure the Dockerfile. Initially, concepts like multi-stage builds, or certain configurations, were unclear. We overcame this by carefully reviewing the provided Dockerfile examples, reading Docker documentation, and experimenting with different configurations to see their effects on image size.
 
+Overall, despite these initial challenges, the lab session was entertaining and interesting. We found it rewarding to see how Docker simplifies an expected future deployment and how easily we could integrate AWS services like DynamoDB and SNS into a real application. The hands-on experience with containerization and multi-container orchestration using Docker Compose provided valuable practical knowledge that will be useful in future projects, not only the ones involving this subject, but also in a professional context.
+
+### ❓ Question 8: Using the AWS Billing and Cost Management Service, access the "Cost Explorer" and capture the cost of last week Using the "Dimension" "Service" where you can see how much did you spend to complete the session in total and per service.
+
+In the cost explorer, no costs were directly registred, because we did not surpass the AWS Free Tier limits. If we explore the cost explorer, the costs are shown as 0 for this week. If we explore the free credits usage, we can see that no charges were made to the DynamoDB and SNS services we used, as shown in the image below. We can see a small cost for another service, related to the previous lab session. 
+
+![Cost Explorer](./images/q8_cost_explorer.png)
