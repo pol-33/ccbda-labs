@@ -28,7 +28,7 @@ We confirmed that the messages were successfully delivered to the subscribed end
 
 Yes. The Docker image built successfully (see docker image list below), and the container ran with port binding 8080:8000 and the provided --env-file. The app was reachable at http://0.0.0.0:8080/, and logs confirmed normal Django startup plus successful operations: items added to DynamoDB and SNS messages sent.
 
-![Docker Containers](./images/q3_docker_list.png)
+![Docker Image List](./images/q3_docker_full.png)
 
 ![Running App](./images/q3_running_on_0000-8080.png)
 
@@ -40,6 +40,12 @@ Yes. The Docker image built successfully (see docker image list below), and the 
 
 ## Task 4.6: Deploy the target web app
 ### ❓ Question 4: Share your thoughts on the task developed above.
+
+The deployment task went very well. We successfully transitioned from a development-ready single container to a production-ready multi-container architecture using Docker Compose, which orchestrates both the Django app and PostgreSQL database with proper networking and volume persistence. The key improvement we implemented is that we switched from `python:3.13.2` to `python:3.13.2-slim`, reducing image size by more than 1GB. We also created `production.env` with `DATABASE=postgresql`, `DB_HOST=db` (container name), and PostgreSQL credentials, updated `requirements.txt` with `gunicorn` and `psycopg2-binary`, and configured `.dockerignore` to keep the image lean and secure.
+
+![Docker CLI](./images/q4_docker_cli.png)
+
+![Docker Containers](./images/q3_docker_list.png)
 
 
 ## Task 4.7: Analisys of the twelve-factor app methodology
