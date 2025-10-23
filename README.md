@@ -51,6 +51,33 @@ The deployment task went very well. We successfully transitioned from a developm
 ## Task 4.7: Analisys of the twelve-factor app methodology
 ### ❓ Question 5: For the above lab session, explain, one by one, how each factor is taken into consideration, or what would you change or add to comply with each factor
 
+- Codebase: The laboratory project has a single codebase stored in GitHub. From this repository, different deployments can be made. It could be improved by implementing a continuous integration and deployment (CI/CD) workflow.
+
+- Dependencies: All project dependencies are declared in the requirements.txt file. In addition, virtual environments (venv) and later Docker containers are used, which ensures proper system isolation
+
+- Config: Specific configurations are stored in environment variables defined in the .env file. This could be improved by using secret managers such as AWS Secrets Manager or Parameter Store.
+
+- Backing services: External services are treated as attached resources, accessed through credentials and configurations defined in the environment. The PostgreSQL database service used with Docker Compose is also managed as an independent resource.
+
+- Build, release, run: 
+During the laboratory development, each of these stages is clearly distinguished:
+  - Build: Creation of the Docker image.
+  - Release: Environment configuration using variables and .env files.
+  - Run: Execution of containers through docker run or docker compose up.
+
+- Processes: The Django application runs as a stateless process within its container. Persistent data is managed externally through DynamoDB or PostgreSQL.
+
+- Port binding: The application is exposed through port binding (0.0.0.0:8000) and published externally on port 8080 of the host. This allows the service to be accessed directly via HTTP. It could be improved by adding an NGINX reverse proxy in front of Gunicorn to enhance efficiency.
+
+- Concurrency: Using Gunicorn with multiple workers enables concurrent request handling. In addition, Docker allows horizontal scaling by running multiple instances of the same container. The application could also be deployed in environments such as AWS ECS, EKS, or Kubernetes to support automatic scaling and dynamic load balancing.
+
+- Disposability: Containers can start and stop quickly without affecting system availability, and persistent data is preserved in volumes or external services. Additionally, defining health checks and automatic restart policies in Docker Compose could ensure agile recovery in case of errors.
+
+- Dev/prod parity: Thanks to Docker, the development and production environments are almost identical. Deployments should also be carried out using the same Docker images in the cloud to achieve full parity.
+
+- Logs: Logs are managed through the container’s standard output (stdout and stderr), which can be viewed using the docker logs command. This allows them to be treated as event streams.
+
+- Admin processes: Administrative tasks, such as database migrations or user creation, are executed as one-off processes within the container. These tasks could also be automated within the deployment flow (CI/CD pipeline).
 
 ## Submit Your Assignment
 ### ❓ Question 6: How much time did you spend on this session?
