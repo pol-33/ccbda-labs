@@ -6,7 +6,62 @@
 # Task 5.1: AWS Relational Database Service
 ## ❓ Question 1: Explain why you will not keep that access open on a production system. How can you do manual maintenance on the database using SQL commands, when necessary?
 
+We should not keep public access open on a production database for several security reasons:
+
+1. **Security Risk**: Opening the database to public internet access (0.0.0.0/0) exposes it to potential attacks, brute force attempts, and unauthorized access from anywhere in the world.
+
+2. **Attack Surface**: Every publicly accessible service increases the attack surface of our infrastructure, making it vulnerable to SQL injection attacks, DDoS attacks, and other malicious activities.
+
+**How to do manual maintenance when necessary:** Set up a VPN connection to the AWS VPC and access the database through the private network.
+
 ## ❓ Question 2: Using the above configuration file, what steps will you follow to have the web application running in your local Docker use the AWS RDS database engine?
+
+To run the web application in local Docker using the AWS RDS database engine, we followed these steps:
+
+1. **Build the Docker image** with a version tag:
+   ```bash
+   docker build -t django-docker:v1.0.0 .
+   ```
+
+2. **Ensured the `aws.env` file is properly configured** with the AWS RDS connection details.
+
+3. **Verified RDS security group** allows inbound traffic on port 5432 from our laptop's IP address.
+
+4. **Initialize the database** (first time only) by running the container interactively:
+   ```bash
+   docker run --env-file aws.env -it django-docker:v1.0.0 /bin/bash
+   ```
+   Then inside the container, create the database and user:
+   ```bash
+   cat > init_db.sql
+    CREATE DATABASE ccbdadb;
+    CREATE USER ccbdauser
+        WITH ENCRYPTED PASSWORD 'ccbdapassword'
+        createdb
+        createrole
+        bypassrls;
+    ALTER USER ccbdauser SET TimeZone = utc;
+    ALTER DATABASE ccbdadb OWNER TO ccbdauser;
+    ^D
+   ```
+   
+    ```bash
+   psql --host=$DB_HOST --port=$DB_PORT --username=postgres < init_db.sql
+    ```
+
+   Where `init_db.sql` contains the SQL commands to create the database and user.
+
+5. **Run Django migrations** to create the necessary tables in the RDS database:
+   ```bash
+   python manage.py migrate
+   ```
+
+6. **Started the Docker container** with the web application:
+   ```bash
+   docker run --env-file aws.env -p 8000:8000 django-docker:v1.0.0
+   ```
+
+7. **Access the web application** at `http://localhost:8000`
 
 ## ❓ Question 3: Explain what does the code in the box above. How can you execute it inside the Docker container?
 
