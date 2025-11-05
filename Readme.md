@@ -33,7 +33,7 @@ To run the web application in local Docker using the AWS RDS database engine, we
    ```
    Then inside the container, create the database and user:
    ```bash
-   cat > init_db.sql
+   cat > init_db.sql << 'EOF'
     CREATE DATABASE ccbdadb;
     CREATE USER ccbdauser
         WITH ENCRYPTED PASSWORD 'ccbdapassword'
@@ -42,7 +42,7 @@ To run the web application in local Docker using the AWS RDS database engine, we
         bypassrls;
     ALTER USER ccbdauser SET TimeZone = utc;
     ALTER DATABASE ccbdadb OWNER TO ccbdauser;
-    ^D
+    EOF
    ```
    
     ```bash
@@ -65,7 +65,70 @@ To run the web application in local Docker using the AWS RDS database engine, we
 
 ## ❓ Question 3: Explain what does the code in the box above. How can you execute it inside the Docker container?
 
+The code in the box above performs the following operations to initialize the PostgreSQL database on AWS RDS:
+
+1. **CREATE DATABASE ccbdadb;** - Creates a new database named `ccbdadb` that will store all the Django application data.
+
+2. **CREATE USER ccbdauser WITH ENCRYPTED PASSWORD 'ccbdapassword' createdb createrole bypassrls;** - Creates a new PostgreSQL user `ccbdauser` with:
+   - An encrypted password `ccbdapassword`
+   - `createdb` privilege: allows the user to create new databases
+   - `createrole` privilege: allows the user to create new roles/users
+   - `bypassrls` privilege: allows the user to bypass row-level security policies
+
+3. **ALTER USER ccbdauser SET TimeZone = utc;** - Sets the default timezone for the user to UTC to ensure consistent timestamp handling across the application.
+
+4. **ALTER DATABASE ccbdadb OWNER TO ccbdauser;** - Changes the ownership of the `ccbdadb` database to `ccbdauser`, giving this user full control over the database.
+
+**How to execute it inside the Docker container:**
+
+1. First, enter the Docker container interactively:
+   ```bash
+   docker run --env-file aws.env -it django-docker:v1.0.0 /bin/bash
+   ```
+
+2. Inside the container, create the SQL script file using `cat` with input redirection:
+   ```bash
+   cat > init_db.sql << 'EOF'
+    CREATE DATABASE ccbdadb;
+    CREATE USER ccbdauser
+        WITH ENCRYPTED PASSWORD 'ccbdapassword'
+        createdb
+        createrole
+        bypassrls;
+    ALTER USER ccbdauser SET TimeZone = utc;
+    ALTER DATABASE ccbdadb OWNER TO ccbdauser;
+    EOF
+   ```
+
+3. Execute the SQL script using the `psql` command:
+   ```bash
+   psql --host=$DB_HOST --port=$DB_PORT --username=postgres < init_db.sql
+   ```
+   
+   The environment variables `$DB_HOST`, `$DB_PORT`, and `$PGPASSWORD` are automatically loaded from the `aws.env` file, which is why `psql` can authenticate and connect to the AWS RDS instance.
+
 ## ❓ Question 4: What is the result of "select * FROM django_migrations;"
+
+The result of `SELECT * FROM django_migrations;` shows all the migrations that Django has applied to the database. After running `python manage.py migrate`, the table contains records of all applied migrations.
+
+To execute this query inside the Docker container:
+
+```bash
+docker run --env-file aws.env -it django-docker:v1.0.0 /bin/bash
+psql --host=$DB_HOST --port=$DB_PORT --username=postgres -d ccbdadb -c "SELECT * FROM django_migrations;"
+```
+
+The  output includes migrations from Django's built-in app:
+
+![q4-db-table-query.png](images/q4-db-table-query.png)
+
+Each row in the `django_migrations` table contains:
+- `id`: Auto-incrementing primary key
+- `app`: The Django app name (e.g., 'auth', 'admin', 'contenttypes', 'sessions')
+- `name`: The migration filename (e.g., '0001_initial')
+- `applied`: Timestamp when the migration was applied
+
+This table is Django's way of tracking which database schema changes have been applied, ensuring that migrations are only run once and in the correct order. It prevents duplicate migrations and helps maintain database schema consistency across different environments.
 
 
 # Task 5.3: Running Docker Container images on AWS Elastic Beanstalk
