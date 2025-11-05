@@ -12,7 +12,16 @@ We should not keep public access open on a production database for several secur
 
 2. **Attack Surface**: Every publicly accessible service increases the attack surface of our infrastructure, making it vulnerable to SQL injection attacks, DDoS attacks, and other malicious activities.
 
-**How to do manual maintenance when necessary:** Set up a VPN connection to the AWS VPC and access the database through the private network.
+**How to do manual maintenance when necessary:** 
+
+To perform manual maintenance on the database while keeping it secure:
+
+1. **Use VPN**: Set up a VPN connection to the AWS VPC and access the database through the private network.
+
+2. **Use a Bastion Host**: Set up an EC2 instance in the same VPC as the RDS instance and SSH into it, then connect to the database from there.
+
+3. **Temporary Access (not recommendable)**: Temporarily add your current IP address to the security group, perform maintenance, then immediately remove it.
+
 
 ## ❓ Question 2: Using the above configuration file, what steps will you follow to have the web application running in your local Docker use the AWS RDS database engine?
 
@@ -62,6 +71,19 @@ To run the web application in local Docker using the AWS RDS database engine, we
    ```
 
 7. **Access the web application** at `http://localhost:8000`
+
+
+**Connecting to the Database with PyCharm:**
+
+To properly connect in PyCharm:
+- **Host**: Your RDS endpoint (e.g., `database-lab.xxxxxxx.us-east-1.rds.amazonaws.com`)
+- **Port**: `5432`
+- **Database**: `ccbdadb`
+- **User**: `ccbdauser`
+- **Password**: `ccbdapassword`
+
+After connecting to `ccbdadb`, you'll see all Django tables under `public` → `Tables`. If you connect to the `postgres` database instead, you'll only see server-level objects like roles, but not the application tables.
+
 
 ## ❓ Question 3: Explain what does the code in the box above. How can you execute it inside the Docker container?
 
