@@ -14,6 +14,23 @@ from pathlib import Path
 import os
 import json
 from dotenv import load_dotenv
+import requests
+
+def get_metadata(path='', default=''):
+    if DEBUG:
+        return default
+    try:
+        headers = {"X-aws-ec2-metadata-token-ttl-seconds": "60"}
+        response = requests.put('http://169.254.169.254/latest/api/token', headers=headers, timeout=5)
+        if response.status_code == 200:
+            response = requests.get(f'http://169.254.169.254/latest/meta-data/{path}',
+                                    headers={'X-aws-ec2-metadata-token': response.text})
+            return response.text
+        else:
+            return default
+    except requests.exceptions.RequestException as e:
+        logger.warning(f"Error accessing metadata: {e}")
+        return default
 
 # Load environment variables from a .env file
 load_dotenv()
@@ -32,6 +49,8 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 DEBUG = os.environ.get("DJANGO_DEBUG", default='False') == 'True'
 
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS').split(':')
+ALLOWED_HOSTS.append(get_metadata('local-ipv4','127.0.0.1'))
+ALLOWED_HOSTS = list(set(ALLOWED_HOSTS))
 
 
 

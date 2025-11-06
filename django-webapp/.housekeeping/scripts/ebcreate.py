@@ -4,10 +4,10 @@ import sys
 ebOptions = {
     'min-instances': '1',
     'max-instances': '3',
-    'instance_profile': 'LabInstanceProfile',
-    'service-role': 'LabRole',
+    'instance_profile': 'aws-elasticbeanstalk-ec2-role',
+    'service-role': 'aws-elasticbeanstalk-service-role',
     'elb-type': 'application',
-    'instance-types':'t2.small',
+    'instance-types':'t3.small',
     'keyname':'aws-eb'
 }
 
@@ -30,6 +30,7 @@ for k, v in config.items():
     opt.append(f'{k}={v}')
 ebOptions['cname'] = HOSTNAME
 ebOptions['envvars'] = '"%s"' % ','.join(opt)
+
 
 opt = []
 for k, v in ebOptions.items():
