@@ -187,12 +187,6 @@ This allows AWS to track what was deployed, when, and enables us to easily roll 
 
 
 ## ❓ Question 6. Open the AWS EC2 console and check how many instances are running and how many AWS ELB instances. Share your thoughts.
-Originally there were three AWS EC2 t3.small instances, but we had to change it in the command because there are no t2.nano instances in the eu-south-2 region.
-There is 1 ELB (Elastic Load Balancer) in this environment, but it is distributed across 3 availability zones (eu-south-2a, eu-south-2b, eu-south-2c) to ensure redundancy and high availability.
-The number of EC2 instances behind the ELB can scale between the minimum and maximum you configured (--min-instances 1 --max-instances 3) depending on traffic and load.
-Additionally, the ELB is internet-facing, which allows external users to access the Django application through its DNS name (awseb--AWSEB-wwvROLDqtk9r-1623737173.eu-south-2.elb.amazonaws.com). This setup, combined with multiple availability zones, ensures that the application remains reachable and responsive, even during deployments or if individual instances fail.
-
-
 After checking the AWS EC2 console, we found:
 
 **EC2 Instances:**
@@ -224,11 +218,9 @@ After checking the AWS EC2 console, we found:
 
 
 ## ❓ Question 7. Terminate one of the AWS EC2 instances using the AWS EC2 console. Is the web app responding now? Why?
-We terminated the only instance that was running. After that, the website stopped allowing navigation between views, and submitting the form returned an error indicating that something had gone wrong. Shortly afterward, a 504 Gateway Timeout occurred, making the interface completely unavailable.
-
-We terminated the running EC2 instance (`i-061dc74cf99353d4e`) using the AWS EC2 console.
-
-What we saw was that the web application stopped responding immediately after terminating the instance.
+We terminated the only EC2 instance that was running (`i-061dc74cf99353d4e`) using the AWS EC2 console. After that, the 
+website stopped allowing navigation between views, and submitting the form returned an error indicating that something 
+had gone wrong. Shortly afterward, a 504 Gateway Timeout occurred, making the interface completely unavailable.
 
 When we terminated the running EC2 instance (i-061dc74cf99353d4e) through the AWS EC2 console, the web application 
 immediately stopped responding because our Elastic Beanstalk environment was configured with only a single instance. 
@@ -257,6 +249,13 @@ Once the new instance became fully available and was running, reloading the page
 
 # How to submit this assignment:
 ## ❓ Question 9: Draw a diagram of the current deployment of the web app using a tool such as Draw.io
+![q9-deployment-diagram.png](images/q9-deployment-diagram.png)
+
+This diagram illustrates the deployment architecture of our Django web application on AWS Elastic Beanstalk with EC2 instances, 
+utilizing AWS RDS and AWS S3.
+
+Attention: Note that in the diagram, the “EC2_1 Details” subgraph visually shows what’s inside an EC2 instance, like the 
+ones in the Auto Scaling Group. 
 
 ## ❓ Question 10: Assess the current version of the web application against each of the twelve factor application.
 1. Codebase: We maintain the codebase in Git, allowing us to create branches to facilitate development. Additionally, we generate a build for what would be the production version and push the Docker image to the AWS repository.
