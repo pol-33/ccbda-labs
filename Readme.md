@@ -143,7 +143,11 @@ psql --host=$DB_HOST --port=$DB_PORT --username=postgres -d ccbdadb -c "SELECT *
 
 The  output includes migrations from Django's built-in app:
 
-![q4-db-table-query.png](images/q4-db-table-query.png)
+<figure align = center>
+    <img src="images/q4-db-table-query.png" alt="table query"/>
+    <figcaption>Figure 1: Resulting table after using Select * From django_migrations.</figcaption>
+</figure>
+
 
 Each row in the `django_migrations` table contains:
 - `id`: Auto-incrementing primary key
@@ -158,16 +162,29 @@ This table is Django's way of tracking which database schema changes have been a
 ## Some images of the process followed in Task 5.2 and Task 5.3:
 
 Configurating the IAM permissions for the user:
-![task5.2-permissions.png](images/task5.2-permissions.png)
+
+<figure align = center>
+    <img src="images/task5.2-permissions.png" alt="User configuration"/>
+    <figcaption>Figure 3: List of user policies after configuration.</figcaption>
+</figure>
 
 Successfully launching the web app:
-![task5.3-successful-launch.png](images/task5.3-successful-launch.png)
+<figure align = center>
+    <img src="images/task5.3-successful-launch.png" alt="Launch"/>
+    <figcaption>Figure 4: Successful message after the launch.</figcaption>
+</figure>
 
 Accessing the deployed web app and trying the related functionalities:
-![task5.3-trying-deployed-version.png](images/task5.3-trying-deployed-version.png)
+<figure align = center>
+    <img src="images/task5.3-trying-deployed-version.png" alt="Web interface"/>
+    <figcaption>Figure 5: Deployed web interface.</figcaption>
+</figure>
 
 Accessing the database from the Elastic Beanstalk instance:
-![task5.3-correct-access-db.png](images/task5.3-correct-access-db.png)
+<figure align = center>
+    <img src="images/task5.3-correct-access-db.png" alt="Access to database"/>
+    <figcaption>Figure 6: Console after database access.</figcaption>
+</figure>
 
 
 # Task 5.3: Running Docker Container images on AWS Elastic Beanstalk
@@ -202,25 +219,35 @@ After checking the AWS EC2 console, we found:
   - Distributed across 6 availability zones in us-east-1
 
 **Thoughts:**
-
 1. **Single Instance Running**: Currently, only 1 EC2 instance is running, even though we configured Elastic Beanstalk with `--min-instances 1 --max-instances 3`. This is the expected behaviour, since the application is not under heavy load, so auto-scaling hasn't triggered additional instances.
+<figure align = center>
+    <img src="images/q6-instances.png" alt="intances list"/>
+    <figcaption>Figure 7: List of instances.</figcaption>
+</figure>
 
 2. **Load Balancer Present**: Despite having only 1 EC2 instance, Elastic Beanstalk still created an Application Load Balancer. This is important to ensure:
    - **High availability**: If the instance fails, the load balancer can route traffic to new instances
    - **Auto-scaling**: When demand increases, new instances can be added behind the same load balancer
    - **Health checks**: The load balancer monitors the instance health and can trigger replacements if needed
+<figure align = center>
+    <img src="images/loadBalancer.png" alt="load balancer data"/>
+    <figcaption>Figure 8: Data of the load balancer.</figcaption>
+</figure>
 
-3. **Multi-AZ Deployment**: The load balancer is configured across 6 availability zones, providing redundancy even though the EC2 instance is in only one zone. This ensures the load balancer itself is highly available.
+3. **Multi-AZ Deployment**: The load balancer is configured across 3 availability zones, providing redundancy even though the EC2 instance is in only one zone. This ensures the load balancer itself is highly available.
+
 
 4. **Cost vs. Reliability Trade-off**: Having a load balancer for a single instance adds cost but provides the infrastructure for automatic scaling and high availability, which is essential for production environments.
-
-![q6-instances.png](images/q6-instances.png)
-
 
 ## ❓ Question 7. Terminate one of the AWS EC2 instances using the AWS EC2 console. Is the web app responding now? Why?
 We terminated the only EC2 instance that was running (`i-061dc74cf99353d4e`) using the AWS EC2 console. After that, the 
 website stopped allowing navigation between views, and submitting the form returned an error indicating that something 
-had gone wrong. Shortly afterward, a 504 Gateway Timeout occurred, making the interface completely unavailable.
+had gone wrong. Shortly afterward, a 504 Gateway Time-out occurred, making the interface completely unavailable.
+
+<figure align = center>
+    <img src="images/timeOut.png" alt="Time-out"/>
+    <figcaption>Figure 9: Display error 504  Gateway Time-out.</figcaption>
+</figure>
 
 When we terminated the running EC2 instance (i-061dc74cf99353d4e) through the AWS EC2 console, the web application 
 immediately stopped responding because our Elastic Beanstalk environment was configured with only a single instance. 
@@ -258,18 +285,19 @@ Attention: Note that in the diagram, the “EC2_1 Details” subgraph visually s
 ones in the Auto Scaling Group. 
 
 ## ❓ Question 10: Assess the current version of the web application against each of the twelve factor application.
-1. Codebase: We maintain the codebase in Git, allowing us to create branches to facilitate development. Additionally, we generate a build for what would be the production version and push the Docker image to the AWS repository.
-2. Dependencies: All dependencies are declared in the requirements.txt file. This allows us to keep track of versions and maintain a clear list of all required packages.
-3. Config: We use the settings.py file to configure aspects such as the Python version. Additionally, the aws.env file allows us to manage environment variables for production, keeping them separate from those used in development. 
-4. Backing Services: The app relies on external services such as PostgreSQL and AWS S3. Currently, these services are tightly coupled in the configuration (environment variables in aws.env), but they could be easily replaced by changing these variables. This factor is partially satisfied. 
-5. Build, Release, Run: This factor is met: we build the Docker image, upload it to AWS, and deploy instances. The ebcreate.py script automates the deployment, but the separation between build and release is not strict, as everything is done in a single step. 
-6. Processes: The app runs in stateless processes using Gunicorn, but there are minimal local state dependencies (for example, local logs before being sent to CloudWatch). This could be improved to be fully stateless. 
-7. Port Binding: The app runs as a self-contained service, listening on the specified port, while Elastic Beanstalk handles HTTP routing. 
-8. Concurrency: Gunicorn handles multiple workers, but automatic scaling depends on Elastic Beanstalk. There is no explicit handling of background tasks outside the web processes. 
-9. Disposability: Containers can start and stop quickly, but the reliance on AWS Elastic Beanstalk means they are not fully independent or easily replaceable without some configuration time. 
-10. Dev/Prod Parity: The same Docker image built locally is deployed in production, ensuring consistency between environments. 
-11. Logs: Logs are collected using eb logs, but there is no continuous streaming or full integration with a centralized logging system like CloudWatch Logs. 
-12. Admin Processes: Administrative tasks (DB migrations, Django management commands) are executed manually via SSH or scripts rather than automatically.
+1. **Codebase**: We maintain the codebase in Git, allowing us to create branches to facilitate development. Additionally, we generate a build for what would be the production version and push the Docker image to the AWS repository.
+2. **Dependencies**: All dependencies are declared in the requirements.txt file. This allows us to keep track of versions and maintain a clear list of all required packages.
+3. **Config**: We use the settings.py file to configure aspects such as the Python version. Additionally, the aws.env file allows us to manage environment variables for production, keeping them separate from those used in development. 
+4. **Backing Services**: The app relies on external services such as PostgreSQL and AWS S3. Currently, these services are tightly coupled in the configuration (environment variables in aws.env), but they could be easily replaced by changing these variables. This factor is partially satisfied. 
+5. **Build, Release, Run**: This factor is met: we build the Docker image, upload it to AWS, and deploy instances. The ebcreate.py script automates the deployment, but the separation between build and release is not strict, as everything is done in a single step. 
+6. **Processes**: The app runs in stateless processes using Gunicorn, but there are minimal local state dependencies (for example, local logs before being sent to CloudWatch). This could be improved to be fully stateless. 
+7. **Port Binding**: The app runs as a self-contained service, listening on the specified port, while Elastic Beanstalk handles HTTP routing. 
+8. **Concurrency**: Gunicorn handles multiple workers, but automatic scaling depends on Elastic Beanstalk. There is no explicit handling of background tasks outside the web processes. 
+9. **Disposability**: Containers can start and stop quickly, but the reliance on AWS Elastic Beanstalk means they are not fully independent or easily replaceable without some configuration time. 
+10. **Dev/Prod Parity**: The same Docker image built locally is deployed in production, ensuring consistency between environments. 
+11. **Logs**: Logs are collected using eb logs, but there is no continuous streaming or full integration with a centralized logging system like CloudWatch Logs. 
+12. **Admin Processes**: Administrative tasks (DB migrations, Django management commands) are executed manually via SSH or scripts rather than automatically.
 
 ## ❓ Question 11: How long have you been working on this session? What have been the main difficulties that you have faced and how have you solved them? Add your answers to README.md.
-This session took us approximately nine hours, including the various tasks and writing the assignment. This was mainly due to issues specifying the correct host in different sections or adding a library to the requirements.txt file.
+This session took us approximately nine hours, including the various tasks and writing the assignment.
+This was mainly due to issues specifying the correct host in different sections or adding a library to the requirements.txt file.
