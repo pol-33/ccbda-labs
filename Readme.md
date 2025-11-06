@@ -234,7 +234,7 @@ After checking the AWS EC2 console, we found:
     <figcaption>Figure 8: Data of the load balancer.</figcaption>
 </figure>
 
-3. **Multi-AZ Deployment**: The load balancer is configured across 3 availability zones, providing redundancy even though the EC2 instance is in only one zone. This ensures the load balancer itself is highly available.
+3. **Multi-AZ Deployment**: The load balancer is configured across 3 availability zones for the "eu-south" region, or 6 for the "us-east-1" region, providing redundancy even though the EC2 instance is in only one zone. This ensures the load balancer itself is highly available.
 
 
 4. **Cost vs. Reliability Trade-off**: Having a load balancer for a single instance adds cost but provides the infrastructure for automatic scaling and high availability, which is essential for production environments.
