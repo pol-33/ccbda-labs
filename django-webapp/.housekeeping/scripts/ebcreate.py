@@ -1,13 +1,14 @@
 from dotenv import dotenv_values
 import sys
 
+# instance profile and service role must be created beforehand
 ebOptions = {
     'min-instances': '1',
     'max-instances': '3',
-    'instance_profile': 'LabInstanceProfile',
-    'service-role': 'LabRole',
+    'instance_profile': 'aws-elasticbeanstalk-ec2-role',
+    'service-role': 'AWSServiceRoleForElasticBeanstalk',
     'elb-type': 'application',
-    'instance-types':'t2.small',
+    'instance-types':'t3.small',
     'keyname':'aws-eb'
 }
 
@@ -30,6 +31,7 @@ for k, v in config.items():
     opt.append(f'{k}={v}')
 ebOptions['cname'] = HOSTNAME
 ebOptions['envvars'] = '"%s"' % ','.join(opt)
+
 
 opt = []
 for k, v in ebOptions.items():

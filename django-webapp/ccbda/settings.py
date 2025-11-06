@@ -14,6 +14,33 @@ from pathlib import Path
 import os
 import json
 from dotenv import load_dotenv
+import requests
+import logging
+
+# Initialize the logger
+logger = logging.getLogger(__name__)
+
+def get_metadata(path='', default=''):
+    # Step 1: If in DEBUG mode, skip metadata retrieval
+    if DEBUG:
+        return default
+    try:
+        # Step 2: Request a security token (valid for 60 seconds)
+        headers = {"X-aws-ec2-metadata-token-ttl-seconds": "60"}
+        response = requests.put('http://169.254.169.254/latest/api/token', headers=headers, timeout=5)
+
+        # Step 3: If token received successfully
+        if response.status_code == 200:
+            # Step 4: Use the token to get actual metadata
+            response = requests.get(f'http://169.254.169.254/latest/meta-data/{path}',
+                                    headers={'X-aws-ec2-metadata-token': response.text})
+            return response.text # Returns the metadata (e.g., IP address)
+        else:
+            return default # If token request fails, return default value
+    except requests.exceptions.RequestException as e:
+        # Step 5: If any network error occurs, log it and return default
+        logger.warning(f"Error accessing metadata: {e}")
+        return default
 
 # Load environment variables from a .env file
 load_dotenv()
@@ -32,6 +59,8 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 DEBUG = os.environ.get("DJANGO_DEBUG", default='False') == 'True'
 
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS').split(':')
+ALLOWED_HOSTS.append(get_metadata('local-ipv4','127.0.0.1'))
+ALLOWED_HOSTS = list(set(ALLOWED_HOSTS))
 
 
 

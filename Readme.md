@@ -129,6 +129,7 @@ The code in the box above performs the following operations to initialize the Po
    
    The environment variables `$DB_HOST`, `$DB_PORT`, and `$PGPASSWORD` are automatically loaded from the `aws.env` file, which is why `psql` can authenticate and connect to the AWS RDS instance.
 
+
 ## ❓ Question 4: What is the result of "select * FROM django_migrations;"
 
 The result of `SELECT * FROM django_migrations;` shows all the migrations that Django has applied to the database. After running `python manage.py migrate`, the table contains records of all applied migrations.
@@ -153,15 +154,98 @@ Each row in the `django_migrations` table contains:
 This table is Django's way of tracking which database schema changes have been applied, ensuring that migrations are only run once and in the correct order. It prevents duplicate migrations and helps maintain database schema consistency across different environments.
 
 
+# Task 5.2: Task 5.2: Adding the Docker image to AWS ECR
+## Some images of the process followed in Task 5.2 and Task 5.3:
+
+Configurating the IAM permissions for the user:
+![task5.2-permissions.png](images/task5.2-permissions.png)
+
+Successfully launching the web app:
+![task5.3-successful-launch.png](images/task5.3-successful-launch.png)
+
+Accessing the deployed web app and trying the related functionalities:
+![task5.3-trying-deployed-version.png](images/task5.3-trying-deployed-version.png)
+
+Accessing the database from the Elastic Beanstalk instance:
+![task5.3-correct-access-db.png](images/task5.3-correct-access-db.png)
+
+
 # Task 5.3: Running Docker Container images on AWS Elastic Beanstalk
 ## ❓ Question 5. What have you found on the zip file? Why do you think it is like that?.
 
+The zip file contains the **source code of the Django web application**, all the Python files, configuration files, static files, and templates from our project directory.
+
+**Why is it like this?**
+
+Elastic Beanstalk needs to store a snapshot of each application version for version control and rollback purposes. When we run `eb create`, the EB CLI automatically:
+
+1. Packages the current working directory into a zip file
+2. Uploads it to an S3 bucket (`elasticbeanstalk-us-east-1-770404291990`)
+3. Tags it with a version identifier (e.g., `app-251106_014455933930.zip`)
+
+This allows AWS to track what was deployed, when, and enables us to easily roll back to previous versions if needed.
+
+
 ## ❓ Question 6. Open the AWS EC2 console and check how many instances are running and how many AWS ELB instances. Share your thoughts.
+
+After checking the AWS EC2 console, we found:
+
+**EC2 Instances:**
+- **1 EC2 instance running**
+  - Instance ID: `i-061dc74cf99353d4e`
+  - Instance Type: `t3.small`
+  - Name: `team2026-1-5-15`
+
+**Elastic Load Balancers:**
+- **1 Application Load Balancer (ALB)**
+  - Type: `application`
+  - State: `active`
+  - Distributed across 6 availability zones in us-east-1
+
+**Thoughts:**
+
+1. **Single Instance Running**: Currently, only 1 EC2 instance is running, even though we configured Elastic Beanstalk with `--min-instances 1 --max-instances 3`. This is the expected behaviour, since the application is not under heavy load, so auto-scaling hasn't triggered additional instances.
+
+2. **Load Balancer Present**: Despite having only 1 EC2 instance, Elastic Beanstalk still created an Application Load Balancer. This is important to ensure:
+   - **High availability**: If the instance fails, the load balancer can route traffic to new instances
+   - **Auto-scaling**: When demand increases, new instances can be added behind the same load balancer
+   - **Health checks**: The load balancer monitors the instance health and can trigger replacements if needed
+
+3. **Multi-AZ Deployment**: The load balancer is configured across 6 availability zones, providing redundancy even though the EC2 instance is in only one zone. This ensures the load balancer itself is highly available.
+
+4. **Cost vs. Reliability Trade-off**: Having a load balancer for a single instance adds cost but provides the infrastructure for automatic scaling and high availability, which is essential for production environments.
+
+![q6-instances.png](images/q6-instances.png)
+
 
 ## ❓ Question 7. Terminate one of the AWS EC2 instances using the AWS EC2 console. Is the web app responding now? Why?
 
+We terminated the running EC2 instance (`i-061dc74cf99353d4e`) using the AWS EC2 console.
+
+What we saw was that the web application stopped responding immediately after terminating the instance.
+
+When we terminated the running EC2 instance (i-061dc74cf99353d4e) through the AWS EC2 console, the web application 
+immediately stopped responding because our Elastic Beanstalk environment was configured with only a single instance. 
+
+This meant that by terminating it, we effectively removed the only server capable of running and serving our Django 
+application at that moment. Although a load balancer was present, it could not route any traffic because there were no 
+healthy backend instances available. As soon as the instance was terminated, the load balancer’s health checks began to 
+fail, marking the target as unhealthy. Until Elastic Beanstalk launched a replacement instance and it passed its health 
+checks, the application remained unavailable, resulting in a temporary service outage.
+
+
 ## ❓ Question 8. Wait three minutes. What happens? Is the web app responding now? Why? What do you expect to happen?
 
+After about three minutes, the web application started responding again because Elastic Beanstalk automatically replaced 
+the terminated EC2 instance. 
+
+The Auto Scaling Group detected that the number of running instances had dropped below the configured minimum 
+(--min-instances 1) and launched a new instance to restore the environment. Once this new instance finished initializing, 
+passed its health checks, and was registered by the load balancer, the application became available again. This 
+self-healing behavior is expected and the desired one: we want Elastic Beanstalk to maintain the desired number of instances 
+automatically. However, since our setup only had one instance, there was a short period of downtime during the replacement. 
+In a production environment with multiple instances across availability zones, such failures would not cause any visible 
+outage in most of the cases.
 
 # How to submit this assignment:
 ## ❓ Question 9: Draw a diagram of the current deployment of the web app using a tool such as Draw.io
