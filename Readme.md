@@ -7,7 +7,7 @@
 ## ❓ Question 1: What issues have you met when following the above instructions?
 
 
-## ❓ Question 2: Run the web application locally and play with the log size of the s3 handler and see how the bucket keeps receiving log files. Share your thoughts. When you run the web application can you see the logs where you expected?
+## ❓ Question 2: Run the web application locally and play with the log size of the s3 handler and see how the bucket keeps receiving log files. Share your thoughts. When you run the web application can you see the logs where you expected?
 
 
 
