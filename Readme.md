@@ -35,6 +35,7 @@
 ---
 
 ## Task 6.3: Create a new option to retrieve the list of leads
+![Admin Search](images/search.png)
 ### ❓ Question 4: Has everything gone alright? What have you changed to make it work in the cloud using Elasticbeanstalk?
 >
 >

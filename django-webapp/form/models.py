@@ -59,4 +59,36 @@ class Leads():
             logger.error(
                 'Error sending AWS SNS message: ' + (e.fmt if hasattr(e, 'fmt') else '') + ','.join(e.args))
 
+    def get_leads(self, domain, preview):
+        try:
+            dynamodb = boto3.resource('dynamodb',
+                                      region_name=settings.AWS_REGION,
+                                      aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                                      aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+            table = dynamodb.Table('ccbda-signup-table')
+        except Exception as e:
+            logger.error(
+                'Error connecting to database table: ' + (e.fmt if hasattr(e, 'fmt') else '') + ','.join(e.args))
+            return None
+        expression_attribute_values = {}
+        FilterExpression = []
+        if preview:
+            expression_attribute_values[':p'] = preview
+            FilterExpression.append('preview = :p')
+        if domain:
+            expression_attribute_values[':d'] = '@' + domain
+            FilterExpression.append('contains(email, :d)')
+        if expression_attribute_values and FilterExpression:
+            response = table.scan(
+                FilterExpression=' and '.join(FilterExpression),
+                ExpressionAttributeValues=expression_attribute_values,
+            )
+        else:
+            response = table.scan(
+                ReturnConsumedCapacity='TOTAL',
+            )
+        if response['ResponseMetadata']['HTTPStatusCode'] == 200:
+            return response['Items']
+        logger.error('Unknown error retrieving items from database.')
+        return None
 
