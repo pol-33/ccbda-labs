@@ -209,7 +209,7 @@
 >    * Docker itself provides strong isolation, packaging all system-level and language-specific dependencies within the container image.
 > 
 > **3. Config: Store config in the environment**
-> * **Assessment:** **Compliant.** Your `eb create` command explicitly uses `--envvars` to inject configuration settings such as `DJANGO_DEBUG`, `DB_HOST`, `DJANGO_SECRET_KEY`, `AWS_REGION`, and various AWS service names. This correctly separates configuration from code.
+> * **Assessment:** **Compliant.** `eb create` command explicitly uses `--envvars` to inject configuration settings such as `DJANGO_DEBUG`, `DB_HOST`, `DJANGO_SECRET_KEY`, `AWS_REGION`, and various AWS service names. This correctly separates configuration from code.
 > 
 > **4. Backing Services: Treat backing services as attached resources**
 > * **Assessment:** **Compliant.**
@@ -228,21 +228,21 @@
 > * **Assessment:** **Likely Compliant.** Docker containers are designed for statelessness. Django, when configured correctly, offloads state to backing services.
 >    * Sessions should be stored in the database or an external cache (e.g., ElastiCache, not in use currently).
 >    * Static and media files are stored in S3.
-
+>
 > **7. Port Binding: Export services via port binding**
-> * **Assessment:** **Compliant.** Your `Dockerrun.aws.json` clearly specifies `ContainerPort: 8000`. The Application Load Balancer (ALB) is configured to route traffic to this exposed port on the container.
-
+> * **Assessment:** **Compliant.** `Dockerrun.aws.json` clearly specifies `ContainerPort: 8000`. The Application Load Balancer (ALB) is configured to route traffic to this exposed port on the container.
+>
 > **8. Concurrency: Scale out via the process model**
 > * **Assessment:** **Compliant.** Elastic Beanstalk's Auto Scaling Group (ASG) (`--min-instances 1 --max-instances 3`) and Application Load Balancer directly enable scaling out by launching more instances (each running one or more processes).
-
+>
 > **9. Disposability: Maximize robustness with fast startup and graceful shutdown**
 > * **Assessment:** **Likely Compliant.** Docker containers are generally quick to start. Elastic Beanstalk manages the lifecycle of EC2 instances, gracefully terminating and replacing them.
-
+>
 > **10. Dev/Prod Parity: Keep development, staging, and production as similar as possible**
 > * **Assessment:** **Likely Compliant.** Using Docker for local development ensures the runtime environment closely mirrors production. Elastic Beanstalk allows creating multiple environments (dev, staging, production) with identical configurations and backing services.
-
+>
 > **11. Logs: Treat logs as event streams**
-> * **Assessment:** **Compliant.** Elastic Beanstalk automatically collects logs from your Docker containers (stdout/stderr) and streams them to Amazon CloudWatch Logs. This treats logs as continuous streams of events.
+> * **Assessment:** **Compliant.** Elastic Beanstalk automatically collects logs from our Docker containers (stdout/stderr) and streams them to Amazon CloudWatch Logs. This treats logs as continuous streams of events.
 > 
 > **12. Admin Processes: Run admin/management tasks as one-off processes**
 > * **Assessment:** **Likely Compliant.** For Django, this typically involves running management commands like `python manage.py migrate` or `createsuperuser`.
