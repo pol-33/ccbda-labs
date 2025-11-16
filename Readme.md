@@ -280,6 +280,4 @@
 ---
 
 ### ❓ Question 9: Using the AWS Billing and Cost Management Service, access the "Cost Explorer" and capture the cost of last week Using the "Dimension" "Service" where you can see how much did you spend to complete the session in total and per service.
->
->
-
+![Cost Explorer Last Week](images/q9-billing.png)
