@@ -59,6 +59,17 @@
 > # Tag the image for AWS ECR
 > docker tag django-docker:v1.0.2 <aws-registry-id>.dkr.ecr.us-east-1.amazonaws.com/django-webapp-docker-repo:v1.0.2
 > ```
+> 
+> **⚠️ Important for Apple Silicon (M1/M2/M3) Macs:**
+> If you're using a Mac with ARM architecture (M-series chips), you **must** build the Docker image for the `linux/amd64` platform, as AWS EC2 instances use x86_64 architecture:
+> ```bash
+> # Build for x86_64 architecture (required for AWS deployment)
+> docker build --platform linux/amd64 -t django-docker:v1.0.2 .
+> 
+> # Tag the image for AWS ECR
+> docker tag django-docker:v1.0.2 <aws-registry-id>.dkr.ecr.us-east-1.amazonaws.com/django-webapp-docker-repo:v1.0.2
+> ```
+> Without the `--platform linux/amd64` flag, your ARM-based Docker image will fail to run on AWS EC2 instances with errors like "exec format error" or container crashes.
 >
 > **Step 3: Authenticate with AWS ECR**
 > ```bash
@@ -150,6 +161,11 @@
 > - Test filtering by domain and preview options
 > - Check that data from DynamoDB is retrieved correctly
 >
+> **Step 9: Terminate Environment (if needed)**
+> ```bash
+> # Terminate the EB environment to avoid costs
+> eb terminate team20
+> ```
 
 ---
 

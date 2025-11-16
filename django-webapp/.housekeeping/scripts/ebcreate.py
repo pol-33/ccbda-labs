@@ -8,7 +8,7 @@ ebOptions = {
     'instance_profile': 'aws-elasticbeanstalk-ec2-role',
     'service-role': 'AWSServiceRoleForElasticBeanstalk',
     'elb-type': 'application',
-    'instance-types':'t3.small',
+    'instance-types':'t3.nano',
     'keyname':'aws-eb'
 }
 
