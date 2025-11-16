@@ -301,3 +301,11 @@ ones in the Auto Scaling Group.
 ## ❓ Question 11: How long have you been working on this session? What have been the main difficulties that you have faced and how have you solved them? Add your answers to README.md.
 This session took us approximately nine hours, including the various tasks and writing the assignment.
 This was mainly due to issues specifying the correct host in different sections or adding a library to the requirements.txt file.
+
+## ❓ Question 12: Using the AWS Billing and Cost Management Service, access the "Cost Explorer" and capture the cost of last week Using the "Dimension" "Service" where you can see how much did you spend to complete the session in total and per service.
+<figure align = center>
+    <img src="images/img_1.png" alt="Cost"/>
+    <figcaption></figcaption>
+</figure>
+
+We used the itemized cost method, since no costs appeared even though we set the services dimension and configured what should appear in the table. We also know that there is more spending than expected, since we forgot to deactivate the instance.
