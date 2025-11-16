@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'form',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -159,8 +160,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+# CloudFront CDN configuration is set at the end of this file
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -232,3 +232,21 @@ LOGGING = {
         },
     },
 }
+
+# CloudFront CDN Configuration for Static Files
+CLOUD_FRONT = os.environ.get("CLOUD_FRONT", default='False') == 'True'
+
+if CLOUD_FRONT:
+    # Production mode: Use S3 + CloudFront for static files
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Different from 'static' to avoid conflict
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME', 'ccbda-webapp-team20')
+    AWS_S3_CUSTOM_DOMAIN = f"{CLOUDFRONT_DISTRIBUTION_ID}.cloudfront.net"
+    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
+    # Source directory for collectstatic command
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+else:
+    # Development mode: Use local static files
+    STATIC_URL = 'static/'
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
