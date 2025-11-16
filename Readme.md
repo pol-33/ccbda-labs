@@ -62,6 +62,7 @@
 > The application successfully deployed and is running with full functionality including DynamoDB search, S3 logging, CloudFront CDN, RDS PostgreSQL, and SNS notifications. You can see below a screenshot of the deployed application running in AWS Elastic Beanstalk, showing the use of the CDN in the source of the corresponding static files.
 
 ![Working in the Cloud](images/q4-working-cloud.png)
+![Working in the Cloud](images/q4-eb.png)
 ---
 
 ### ❓ Question 5: Explain all the steps that you have followed after changing the web application code to have the web application updates running in the cloud.
@@ -79,7 +80,7 @@
 > docker build -t django-docker:v1.0.2.1 .
 > 
 > # Tag the image for AWS ECR
-> docker tag django-docker:v1.0.2.1 <aws-registry-id>.dkr.ecr.us-east-1.amazonaws.com/django-webapp-docker-repo:v1.0.2.1
+> docker tag django-docker:v1.0.2.1 <aws-registry-id>.dkr.ecr.<aws-region>.amazonaws.com/django-webapp-docker-repo:v1.0.2.1
 > ```
 > 
 > **⚠️ Important for Apple Silicon (M1/M2/M3) Macs:**
@@ -89,20 +90,20 @@
 > docker build --platform linux/amd64 -t django-docker:v1.0.2.1 .
 > 
 > # Tag the image for AWS ECR
-> docker tag django-docker:v1.0.2.1 <aws-registry-id>.dkr.ecr.us-east-1.amazonaws.com/django-webapp-docker-repo:v1.0.2.1
+> docker tag django-docker:v1.0.2.1 <aws-registry-id>.dkr.ecr.<aws-region>.amazonaws.com/django-webapp-docker-repo:v1.0.2.1
 > ```
 > Without the `--platform linux/amd64` flag, your ARM-based Docker image will fail to run on AWS EC2 instances with errors like "exec format error" or container crashes.
 >
 > **Step 3: Authenticate with AWS ECR**
 > ```bash
 > # Get login password and authenticate Docker with ECR
-> aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <aws-registry-id>.dkr.ecr.us-east-1.amazonaws.com
+> aws ecr get-login-password --region <aws-region> | docker login --username AWS --password-stdin <aws-registry-id>.dkr.ecr.us-east-1.amazonaws.com
 > ```
 >
 > **Step 4: Push New Image to AWS ECR**
 > ```bash
 > # Push the new version to ECR repository
-> docker push <aws-registry-id>.dkr.ecr.us-east-1.amazonaws.com/django-webapp-docker-repo:v1.0.2.1
+> docker push <aws-registry-id>.dkr.ecr.<aws-region>.amazonaws.com/django-webapp-docker-repo:v1.0.2.1
 > 
 > # Verify the image was uploaded
 > aws ecr list-images --repository-name django-webapp-docker-repo
@@ -115,7 +116,7 @@
 > {
 >   "AWSEBDockerrunVersion": "1",
 >   "Image": {
->     "Name": "<aws-registry-id>.dkr.ecr.us-east-1.amazonaws.com/django-webapp-docker-repo:v1.0.2.1"
+>     "Name": "<aws-registry-id>.dkr.ecr.<aws-region>.amazonaws.com/django-webapp-docker-repo:v1.0.2.1"
 >   },
 >   "Ports": [
 >     {
@@ -133,10 +134,11 @@
 > cd .housekeeping/elasticbeanstalk
 > 
 > # Initialize Elastic Beanstalk application
-> eb init --region us-east-1 -i django-webapp-eb
+> eb init --region <aws-region> -i django-webapp-eb
 > # Select: Docker -> Docker running on 64bit Amazon Linux 2023 -> SSH: yes -> Select keypair
 > 
 > # Generate the create command using the Python script
+> cd .houskeeping/elasticbeanstalk/
 > python ../scripts/ebcreate.py ../../aws.env team20
 > 
 > # Copy and run the output command (it will be very long)
@@ -146,8 +148,6 @@
 > If the environment already exists, use these commands instead:
 > 
 > ```bash
-> cd .housekeeping/elasticbeanstalk
-> 
 > # List existing environments
 > eb list
 > 
