@@ -166,21 +166,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-        },
-    },
-    "loggers": {
-        "django": {
-            "handlers": ["console"],
-            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
-        },
-    },
-}
 
 CCBDA_SIGNUP_TABLE = os.getenv('CCBDA_SIGNUP_TABLE')
 AWS_REGION = os.getenv('AWS_REGION')
@@ -188,3 +173,57 @@ AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_SESSION_TOKEN = os.getenv('AWS_SESSION_TOKEN')
 NEW_SIGNUP_TOPIC = os.getenv('NEW_SIGNUP_TOPIC')
+
+AWS_EC2_INSTANCE_ID = get_metadata('instance-id','--instance-id--')
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{asctime} {levelname} ["+AWS_EC2_INSTANCE_ID+"] [{funcName}:{module}:{lineno}] {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{asctime} {levelname} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+        'file': {
+            'level': 'INFO',
+            "formatter": "verbose",
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, "file.log"),
+            "maxBytes": 5 * 1024 ,  # 5 K
+            "backupCount": 1,
+            "encoding": None,
+            "delay": 0,
+        },
+        "s3": {
+            "level": "INFO",
+            "formatter": "verbose",
+            "class": "ccbda.S3RotatingFileHandler",
+            "filename": os.path.join(BASE_DIR, "s3.log"),
+            "maxBytes": 5 * 1024 ,  # 5 K
+            "backupCount": 1,
+            "encoding": None,
+            "delay": 0,
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console", "file", "s3"],
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "propagate": False,
+        },
+    },
+}
