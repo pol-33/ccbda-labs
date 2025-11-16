@@ -38,8 +38,28 @@
 ![Admin Search](images/search.png)
 
 ### ❓ Question 4: Has everything gone alright? What have you changed to make it work in the cloud using Elasticbeanstalk?
+> The deployment to AWS Elastic Beanstalk faced several challenges that required specific solutions:
+>
+> **1. Docker Platform Architecture Issues (Apple Silicon M-series Macs)**
+> - **Problem**: Initially built the new Docker images on Apple Silicon (ARM architecture) failed to run on AWS EC2 instances (x86_64 architecture)
+> - **Solution**: Fllowing the same issue we found inthe previous laboratory session, we rebuilt the Docker image using the `--platform linux/amd64` flag to ensure x86_64 compatibility:
+>   ```bash
+>   docker build --platform linux/amd64 -t django-docker:v1.0.2.1 .
+>   ```
+>
+> **2. Instance Type Selection**
+> - **Problem**: We tried an initial deployment with `t3.nano` which failed because they are not eligible for AWS Free Tier
+> - **Solution**: Changed the instance type to `t3.small`, a configuration that worked correctly in the previous laboratory session
+
+![Instance Type Problems Console](images/q4-problems-found.png)
+
+>
+> **3. Shell Special Characters in Environment Variables**
+> - **Problem**: Passwords containing `!` characters caused zsh history expansion errors during command execution
+> - **Solution**: Used single quotes instead of double quotes when passing the `--envvars` parameter to prevent shell interpretation of special characters
 >
 >
+> The application successfully deployed and is running with full functionality including DynamoDB search, S3 logging, CloudFront CDN, RDS PostgreSQL, and SNS notifications. You can see below a screenshot of the deployed application running in AWS Elastic Beanstalk, showing the use of the CDN in the source of the corresponding static files.
 
 ![Working in the Cloud](images/q4-working-cloud.png)
 ---
