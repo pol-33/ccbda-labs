@@ -1,7 +1,7 @@
 {
   "AWSEBDockerrunVersion": "1",
   "Image": {
-    "Name": "770404291990.dkr.ecr.us-east-1.amazonaws.com/django-webapp-docker-repo:v1.0.2.1"
+    "Name": "897118922512.dkr.ecr.eu-south-2.amazonaws.com/django-webapp-docker-repo:v1.0.2.1"
   },
   "Ports": [
     {
