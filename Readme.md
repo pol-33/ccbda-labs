@@ -14,7 +14,7 @@
 >
 > The logs appeared exactly where we expected them in the S3 bucket: `s3://team20.ccbda.upc.edu/logs/`. This centralized logging approach is very effective for production environments where multiple EC2 instances need to send logs to a common location for monitoring and analysis. The rotation mechanism ensures that log files don't grow indefinitely while maintaining a complete history in S3. The verbose log format with instance ID, module, and line numbers makes it easy to debug issues and trace activity across different instances.
 
-![alt text](https://file%2B.vscode-resource.vscode-cdn.net/Users/polplana/Documents/Universitat/ACAP/2026_1-6-20/images/q2-s3-logs.png?version%3D1763291704454)
+![S3 Bucket with Logs](images/q2-s3-logs.png)
 
 ---
 
