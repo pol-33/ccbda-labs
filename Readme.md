@@ -3,7 +3,7 @@
 - Zixin Zhang
 - Pol Plana
 
-##  Task 6.1: Centralize the logs of your application instances
+## Task 6.1: Centralize the logs of your application instances
 ### ❓ Question 1: What issues have you met when following the above instructions?
 >
 >
