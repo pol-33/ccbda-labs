@@ -36,10 +36,12 @@
 
 ## Task 6.3: Create a new option to retrieve the list of leads
 ![Admin Search](images/search.png)
+
 ### ❓ Question 4: Has everything gone alright? What have you changed to make it work in the cloud using Elasticbeanstalk?
 >
 >
 
+![Working in the Cloud](images/q4-working-cloud.png)
 ---
 
 ### ❓ Question 5: Explain all the steps that you have followed after changing the web application code to have the web application updates running in the cloud.
@@ -54,20 +56,20 @@
 > **Step 2: Rebuild Docker Image with New Version**
 > ```bash
 > # Build new Docker image with updated code
-> docker build -t django-docker:v1.0.2 .
+> docker build -t django-docker:v1.0.2.1 .
 > 
 > # Tag the image for AWS ECR
-> docker tag django-docker:v1.0.2 <aws-registry-id>.dkr.ecr.us-east-1.amazonaws.com/django-webapp-docker-repo:v1.0.2
+> docker tag django-docker:v1.0.2.1 <aws-registry-id>.dkr.ecr.us-east-1.amazonaws.com/django-webapp-docker-repo:v1.0.2.1
 > ```
 > 
 > **⚠️ Important for Apple Silicon (M1/M2/M3) Macs:**
 > If you're using a Mac with ARM architecture (M-series chips), you **must** build the Docker image for the `linux/amd64` platform, as AWS EC2 instances use x86_64 architecture:
 > ```bash
 > # Build for x86_64 architecture (required for AWS deployment)
-> docker build --platform linux/amd64 -t django-docker:v1.0.2 .
+> docker build --platform linux/amd64 -t django-docker:v1.0.2.1 .
 > 
 > # Tag the image for AWS ECR
-> docker tag django-docker:v1.0.2 <aws-registry-id>.dkr.ecr.us-east-1.amazonaws.com/django-webapp-docker-repo:v1.0.2
+> docker tag django-docker:v1.0.2.1 <aws-registry-id>.dkr.ecr.us-east-1.amazonaws.com/django-webapp-docker-repo:v1.0.2.1
 > ```
 > Without the `--platform linux/amd64` flag, your ARM-based Docker image will fail to run on AWS EC2 instances with errors like "exec format error" or container crashes.
 >
@@ -80,7 +82,7 @@
 > **Step 4: Push New Image to AWS ECR**
 > ```bash
 > # Push the new version to ECR repository
-> docker push <aws-registry-id>.dkr.ecr.us-east-1.amazonaws.com/django-webapp-docker-repo:v1.0.2
+> docker push <aws-registry-id>.dkr.ecr.us-east-1.amazonaws.com/django-webapp-docker-repo:v1.0.2.1
 > 
 > # Verify the image was uploaded
 > aws ecr list-images --repository-name django-webapp-docker-repo
@@ -93,7 +95,7 @@
 > {
 >   "AWSEBDockerrunVersion": "1",
 >   "Image": {
->     "Name": "<aws-registry-id>.dkr.ecr.us-east-1.amazonaws.com/django-webapp-docker-repo:v1.0.2"
+>     "Name": "<aws-registry-id>.dkr.ecr.us-east-1.amazonaws.com/django-webapp-docker-repo:v1.0.2.1"
 >   },
 >   "Ports": [
 >     {
