@@ -26,7 +26,11 @@
 
 ![S3 Files in the AWS Console](images/q3-s3-aws-console.png)
 
+![CloudFront Console Working](images/q3-cloudfront-console.png)
+
 ![CloudFront Distribution](images/q3-cdn.png)
+
+![CDN Working Fonts Browser](images/q3-cdn-working-fonts.png)
 
 ---
 
