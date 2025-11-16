@@ -199,7 +199,54 @@
 
 ### ❓ Question 7: Assess the current version of the web application against each of the twelve factor application.
 >
+> #### **The Twelve-Factor App Assessment:**
+> **1. Codebase: One codebase tracked in revision control, many deploys**
+> * **Assessment:** **Compliant.** The use of Elastic Beanstalk implies a single codebase that is version-controlled (e.g., in Git). Each `eb deploy` represents a new release built from this single codebase, allowing for multiple deployments (dev, staging, prod, etc.) from the same source.
+> 
+> **2. Dependencies: Explicitly declare and isolate dependencies**
+> * **Assessment:** **Compliant.** For a Dockerized Python/Django application:
+>    * Python dependencies are declared in `requirements.txt`.
+>    * Docker itself provides strong isolation, packaging all system-level and language-specific dependencies within the container image.
+> 
+> **3. Config: Store config in the environment**
+> * **Assessment:** **Compliant.** Your `eb create` command explicitly uses `--envvars` to inject configuration settings such as `DJANGO_DEBUG`, `DB_HOST`, `DJANGO_SECRET_KEY`, `AWS_REGION`, and various AWS service names. This correctly separates configuration from code.
+> 
+> **4. Backing Services: Treat backing services as attached resources**
+> * **Assessment:** **Compliant.**
+>    * **AWS RDS (PostgreSQL):** The connection details (`DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_PORT`) are passed via environment variables, treating it as a pluggable resource.
+>    * **AWS S3:** Referenced by bucket names (`AWS_S3_BUCKET_NAME`, `AWS_STORAGE_BUCKET_NAME`) via environment variables.
+>    * **AWS DynamoDB:** Referenced by table name (`CCBDA_SIGNUP_TABLE`) via environment variables.
+>    * **AWS ECR:** The Docker image source is configured externally in `Dockerrun.aws.json`.
+> 
+> **5. Build, Release, Run: Strictly separate build and run stages**
+> * **Assessment:** **Compliant.**
+>    * **Build:** The Docker image is built (e.g., on a developer's machine or CI/CD) and pushed to AWS ECR. This is the "build" stage.
+>    * **Release:** The `eb deploy` command creates an immutable "release" that bundles the application source (including `Dockerrun.aws.json` pointing to the ECR image) and a specific configuration (your `--envvars`).
+>    * **Run:** Elastic Beanstalk's EC2 instances pull the specified Docker image from ECR and execute the containerized application. This is the "run" stage.
 >
+> **6. Processes: Execute the app as one or more stateless processes**
+> * **Assessment:** **Likely Compliant.** Docker containers are designed for statelessness. Django, when configured correctly, offloads state to backing services.
+>    * Sessions should be stored in the database or an external cache (e.g., ElastiCache, not in use currently).
+>    * Static and media files are stored in S3.
+
+> **7. Port Binding: Export services via port binding**
+> * **Assessment:** **Compliant.** Your `Dockerrun.aws.json` clearly specifies `ContainerPort: 8000`. The Application Load Balancer (ALB) is configured to route traffic to this exposed port on the container.
+
+> **8. Concurrency: Scale out via the process model**
+> * **Assessment:** **Compliant.** Elastic Beanstalk's Auto Scaling Group (ASG) (`--min-instances 1 --max-instances 3`) and Application Load Balancer directly enable scaling out by launching more instances (each running one or more processes).
+
+> **9. Disposability: Maximize robustness with fast startup and graceful shutdown**
+> * **Assessment:** **Likely Compliant.** Docker containers are generally quick to start. Elastic Beanstalk manages the lifecycle of EC2 instances, gracefully terminating and replacing them.
+
+> **10. Dev/Prod Parity: Keep development, staging, and production as similar as possible**
+> * **Assessment:** **Likely Compliant.** Using Docker for local development ensures the runtime environment closely mirrors production. Elastic Beanstalk allows creating multiple environments (dev, staging, production) with identical configurations and backing services.
+
+> **11. Logs: Treat logs as event streams**
+> * **Assessment:** **Compliant.** Elastic Beanstalk automatically collects logs from your Docker containers (stdout/stderr) and streams them to Amazon CloudWatch Logs. This treats logs as continuous streams of events.
+> 
+> **12. Admin Processes: Run admin/management tasks as one-off processes**
+> * **Assessment:** **Likely Compliant.** For Django, this typically involves running management commands like `python manage.py migrate` or `createsuperuser`.
+
 
 ---
 
