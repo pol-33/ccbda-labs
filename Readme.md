@@ -22,6 +22,11 @@
 ### ❓ Question 3: Take a couple of screenshots of you S3 and CloudFront consoles to demonstrate that everything worked all right.
 >
 >
+![S3 Uploaded Static Files](images/q3-console.png)
+
+![S3 Files in the AWS Console](images/q3-aws-console.png)
+
+![CloudFront Distribution](images/q3-cdn.png)
 
 ---
 
