@@ -205,7 +205,26 @@
 
 ## Wrap Up:
 ### ❓ Question 8: How long have you been working on this session? What have been the main difficulties that you have faced and how have you solved them? Add your answers to README.md.
+> **Time Spent**: We spent 8 hours in total across implementation, testing, debugging, deployment, and question answering phases.
 >
+> **Main Difficulties and Solutions:**
+>
+> **1. S3 Log Rotation Behavior**
+> - **Difficulty**: Logs weren't appearing in S3 immediately after starting the application
+> - **Root Cause**: The `S3RotatingFileHandler` only uploads logs after reaching the 5 KB threshold
+> - **Solution**: Generated sufficient log entries by repeatedly submitting the signup form to trigger rotation and verify the upload mechanism worked correctly
+>
+> **2. CloudFront CDN Integration**
+> - **Difficulty**: Configuring `django-storages` to work with both S3 and CloudFront without breaking local development
+>
+> **3. DynamoDB Search Implementation Bug Solving**
+> - **Difficulty**: Handling edge cases in search functionality, including:
+>   * `None` returns from DynamoDB causing "NoneType is not iterable" errors
+>   * Malformed email addresses without `@` symbol causing `IndexError`
+>
+> **4. Docker Multi-Architecture Build Issues**
+> - **Difficulty**: Docker images built on Apple Silicon Mac (ARM) failed on AWS EC2 (x86_64) because ARM-based images are incompatible with AWS EC2's x86_64 architecture.
+> - **Solution**: We rebuilt all Docker images with `--platform linux/amd64` flag to ensure cross-platform compatibility
 >
 
 ---
