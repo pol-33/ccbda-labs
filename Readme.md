@@ -192,8 +192,11 @@
 ---
 
 ### ❓ Question 6: Draw a diagram of the current deployment of the web app using a tool such as Draw.io
->
->
+> This diagram illustrates the deployment architecture of our Django web application on AWS Elastic Beanstalk with EC2 instances, utilizing AWS RDS, Dynamo DB, and AWS S3. Now it includes the implemented CloudFront CDN infrastructure for static content delivery, and the new S3 buckets for Log Centralization and static files.
+> Attention: Note that in the diagram, the “EC2_1 Details” subgraph visually shows what’s inside an EC2 instance, like the ones in the Auto Scaling Group.
+
+![Deployment Diagram](images/q6-diagram.png)
+
 
 ---
 
