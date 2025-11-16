@@ -43,7 +43,112 @@
 ---
 
 ### ❓ Question 5: Explain all the steps that you have followed after changing the web application code to have the web application updates running in the cloud.
+> After implementing the search functionality (Task 6.3) in our web application, we followed these steps to deploy the updates to AWS Elastic Beanstalk:
 >
+> **Step 1: Test Locally**
+> - First, we tested all changes locally using `python manage.py runserver`
+> - Verified the search functionality works at `http://127.0.0.1:8000/search`
+> - Confirmed the new menu item appears in the navigation bar
+> - Tested different search scenarios (domain filter, preview filter, and no filters)
+>
+> **Step 2: Rebuild Docker Image with New Version**
+> ```bash
+> # Build new Docker image with updated code
+> docker build -t django-docker:v1.0.2 .
+> 
+> # Tag the image for AWS ECR
+> docker tag django-docker:v1.0.2 <aws-registry-id>.dkr.ecr.us-east-1.amazonaws.com/django-webapp-docker-repo:v1.0.2
+> ```
+>
+> **Step 3: Authenticate with AWS ECR**
+> ```bash
+> # Get login password and authenticate Docker with ECR
+> aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <aws-registry-id>.dkr.ecr.us-east-1.amazonaws.com
+> ```
+>
+> **Step 4: Push New Image to AWS ECR**
+> ```bash
+> # Push the new version to ECR repository
+> docker push <aws-registry-id>.dkr.ecr.us-east-1.amazonaws.com/django-webapp-docker-repo:v1.0.2
+> 
+> # Verify the image was uploaded
+> aws ecr list-images --repository-name django-webapp-docker-repo
+> ```
+>
+> **Step 5: Update Dockerrun.aws.json**
+> - Navigate to `.housekeeping/elasticbeanstalk/` directory
+> - Update `Dockerrun.aws.json` to reference the new image version:
+> ```json
+> {
+>   "AWSEBDockerrunVersion": "1",
+>   "Image": {
+>     "Name": "<aws-registry-id>.dkr.ecr.us-east-1.amazonaws.com/django-webapp-docker-repo:v1.0.2"
+>   },
+>   "Ports": [
+>     {
+>       "ContainerPort": 8000
+>     }
+>   ]
+> }
+> ```
+>
+> **Step 6: Initialize and Create Elastic Beanstalk Environment**
+> 
+> If this is your first deployment, you need to initialize and create the EB environment:
+> 
+> ```bash
+> cd .housekeeping/elasticbeanstalk
+> 
+> # Initialize Elastic Beanstalk application
+> eb init --region us-east-1 -i django-webapp-eb
+> # Select: Docker -> Docker running on 64bit Amazon Linux 2023 -> SSH: yes -> Select keypair
+> 
+> # Generate the create command using the Python script
+> python ../scripts/ebcreate.py ../../aws.env team20
+> 
+> # Copy and run the output command (it will be very long)
+> # Example: eb create team20 --min-instances 1 --max-instances 3 ...
+> ```
+> 
+> If the environment already exists, use these commands instead:
+> 
+> ```bash
+> cd .housekeeping/elasticbeanstalk
+> 
+> # List existing environments
+> eb list
+> 
+> # Select your environment
+> eb use team20
+> 
+> # Deploy the new version
+> eb deploy
+> ```
+> 
+> **Important Notes:**
+> - The first `eb create` takes 5-15 minutes to provision all AWS resources
+> - Subsequent deployments with `eb deploy` are much faster (2-5 minutes)
+> - Make sure your IAM user has `AdministratorAccess-AWSElasticBeanstalk` policy
+> - Ensure the `AmazonEC2ContainerRegistryReadOnly` and `AWSElasticBeanstalk` policies
+>
+> **Step 7: Monitor Deployment**
+> - Watch the deployment progress in terminal
+> - Check AWS Elastic Beanstalk console for health status
+> - Wait for environment health to return to "Ok" (green)
+> ```bash
+> eb status  # Check deployment status
+> eb health  # Monitor instance health
+> ```
+>
+> **Step 8: Verify Deployment**
+> ```bash
+> # Open the web application in browser
+> eb open
+> ```
+> - Test the search functionality at `/search`
+> - Verify the Admin search menu item appears
+> - Test filtering by domain and preview options
+> - Check that data from DynamoDB is retrieved correctly
 >
 
 ---
