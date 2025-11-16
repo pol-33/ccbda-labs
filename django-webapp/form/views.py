@@ -2,11 +2,18 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from .models import Leads
 import logging
+from django.conf import settings
 
 logger = logging.getLogger('django')
 
 def home(request):
-    return render(request, 'form/index.html')
+    logger.info('Home page accessed')
+
+    context = {
+        'cloudfront_id': settings.CLOUDFRONT_DISTRIBUTION_ID,
+    }
+
+    return render(request, 'form/index.html', context)
 
 
 def signup(request):

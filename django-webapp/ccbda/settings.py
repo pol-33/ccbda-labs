@@ -177,6 +177,8 @@ NEW_SIGNUP_TOPIC = os.getenv('NEW_SIGNUP_TOPIC')
 AWS_S3_BUCKET_NAME=os.getenv('AWS_S3_BUCKET_NAME')
 AWS_S3_LOGS_PREFIX=os.getenv('AWS_S3_LOGS_PREFIX')
 
+CLOUDFRONT_DISTRIBUTION_ID = os.getenv('CLOUDFRONT_DISTRIBUTION_ID', '')
+
 AWS_EC2_INSTANCE_ID = get_metadata('instance-id','--instance-id--')
 
 LOGGING = {
