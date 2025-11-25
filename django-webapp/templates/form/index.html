@@ -66,6 +66,20 @@
         </div>
     </div>
 {% endblock %}
+{% block feeds %}
+	<div id="feedDisplay" class="row" style="display:{% if email|length == 0 %}none{% else %}visible{% endif %}">
+		<hr>
+		{% for f in feeds %}
+			<div class="w-50 mb-4">
+				<h3>{{ f.title }}</h3>
+				<p class="small">hits: {{ f.hits }}</p>
+				<div>{{ f.summary| safe }}<br/>
+					<a href="{{ f.link }}" target="_blank">Read more...</a>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+{% endblock %}
 {% block scripts %}
     {% csrf_token %}
     <script type="text/javascript">
@@ -87,11 +101,15 @@
             $("#signup").click(function () {
                 $.post("{% url 'form:signup' %}", $("#signupForm").serialize(),
                     function (data) {
+                        $("#jumbohome").hide();
+                        $("#feedDisplay").show();
                         $("#signupSuccess").show();
                     }
                 ).error(function (xhr) {
                     switch (xhr.status) {
                         case 409:
+                            $("#jumbohome").hide();
+                            $("#feedDisplay").show();
                             $("#signupDuplicate").show();
                             break;
                         default:

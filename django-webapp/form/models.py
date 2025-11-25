@@ -1,6 +1,13 @@
 import boto3
 from django.conf import settings
 import logging
+import feedparser
+import requests
+from django.db import models
+from django.shortcuts import reverse
+from urllib.parse import urlencode, urljoin
+from bs4 import BeautifulSoup
+
 
 logger = logging.getLogger('django')
 
@@ -42,53 +49,34 @@ class Leads():
             logger.error('Unknown error inserting item to database.')
 
         return status
-    
-    def send_notification(self, email):
-        sns = boto3.client('sns', region_name=settings.AWS_REGION,
-                        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
-        try:
-            sns.publish(
-                TopicArn=settings.NEW_SIGNUP_TOPIC,
-                Message='New signup: %s' % email,
-                Subject='New signup',
-            )
-            logger.error('SNS message sent.')
 
-        except Exception as e:
-            logger.error(
-                'Error sending AWS SNS message: ' + (e.fmt if hasattr(e, 'fmt') else '') + ','.join(e.args))
+class Feeds(models.Model):
+    title = models.CharField(max_length=200)
+    link = models.URLField()
+    summary = models.TextField()
+    author = models.CharField(max_length=120)
+    hits = models.BigIntegerField(default=0)
 
-    def get_leads(self, domain, preview):
-        try:
-            dynamodb = boto3.resource('dynamodb',
-                                      region_name=settings.AWS_REGION,
-                                      aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                                      aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
-            table = dynamodb.Table('ccbda-signup-table')
-        except Exception as e:
-            logger.error(
-                'Error connecting to database table: ' + (e.fmt if hasattr(e, 'fmt') else '') + ','.join(e.args))
-            return None
-        expression_attribute_values = {}
-        FilterExpression = []
-        if preview:
-            expression_attribute_values[':p'] = preview
-            FilterExpression.append('preview = :p')
-        if domain:
-            expression_attribute_values[':d'] = '@' + domain
-            FilterExpression.append('contains(email, :d)')
-        if expression_attribute_values and FilterExpression:
-            response = table.scan(
-                FilterExpression=' and '.join(FilterExpression),
-                ExpressionAttributeValues=expression_attribute_values,
-            )
-        else:
-            response = table.scan(
-                ReturnConsumedCapacity='TOTAL',
-            )
-        if response['ResponseMetadata']['HTTPStatusCode'] == 200:
-            return response['Items']
-        logger.error('Unknown error retrieving items from database.')
-        return None
-
+    def refresh_data(self):
+        for u in settings.RSS_URLS:
+            response = requests.get(u)
+            try:
+                feed = feedparser.parse(response.content)
+                for entry in feed.entries:
+                    article = Feeds.objects.create(
+                        title=entry.title,
+                        link='',
+                        summary='',
+                        author=entry.author
+                    )
+                    base_link = reverse('form:hit', kwargs={'id': article.id})
+                    article.link = urljoin(base_link,'?'+urlencode({'url':entry.link}))
+                    summary = BeautifulSoup(entry.summary, 'html.parser')
+                    for anchor in summary.find_all('a'):
+                        anchor['href'] = urljoin(base_link,'?'+urlencode({'url':anchor['href']}))
+                        anchor['target'] = '_blank'
+                    article.summary = str(summary)
+                    article.save()
+                    logger.info(f'Create article "{entry.title}"')
+            except Exception as e:
+                logger.error(f'Feed reading error: {e}')

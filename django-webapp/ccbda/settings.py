@@ -16,31 +16,27 @@ import json
 from dotenv import load_dotenv
 import requests
 import logging
+import form.apps
 
-# Initialize the logger
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
+
 
 def get_metadata(path='', default=''):
-    # Step 1: If in DEBUG mode, skip metadata retrieval
     if DEBUG:
         return default
     try:
-        # Step 2: Request a security token (valid for 60 seconds)
         headers = {"X-aws-ec2-metadata-token-ttl-seconds": "60"}
         response = requests.put('http://169.254.169.254/latest/api/token', headers=headers, timeout=5)
-
-        # Step 3: If token received successfully
         if response.status_code == 200:
-            # Step 4: Use the token to get actual metadata
             response = requests.get(f'http://169.254.169.254/latest/meta-data/{path}',
                                     headers={'X-aws-ec2-metadata-token': response.text})
-            return response.text # Returns the metadata (e.g., IP address)
+            return response.text
         else:
-            return default # If token request fails, return default value
+            return default
     except requests.exceptions.RequestException as e:
-        # Step 5: If any network error occurs, log it and return default
         logger.warning(f"Error accessing metadata: {e}")
         return default
+
 
 # Load environment variables from a .env file
 load_dotenv()
@@ -59,10 +55,8 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 DEBUG = os.environ.get("DJANGO_DEBUG", default='False') == 'True'
 
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS').split(':')
-ALLOWED_HOSTS.append(get_metadata('local-ipv4','127.0.0.1'))
+ALLOWED_HOSTS.append(get_metadata('local-ipv4', '127.0.0.1'))
 ALLOWED_HOSTS = list(set(ALLOWED_HOSTS))
-
-
 
 # Application definition
 
@@ -74,7 +68,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'form',
-    'storages',
 ]
 
 MIDDLEWARE = [
@@ -160,33 +153,21 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-# CloudFront CDN configuration is set at the end of this file
+STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-CCBDA_SIGNUP_TABLE = os.getenv('CCBDA_SIGNUP_TABLE')
-AWS_REGION = os.getenv('AWS_REGION')
-AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
-AWS_SESSION_TOKEN = os.getenv('AWS_SESSION_TOKEN')
-NEW_SIGNUP_TOPIC = os.getenv('NEW_SIGNUP_TOPIC')
-AWS_S3_BUCKET_NAME=os.getenv('AWS_S3_BUCKET_NAME')
-AWS_S3_LOGS_PREFIX=os.getenv('AWS_S3_LOGS_PREFIX')
-
-CLOUDFRONT_DISTRIBUTION_ID = os.getenv('CLOUDFRONT_DISTRIBUTION_ID', '')
-
-AWS_EC2_INSTANCE_ID = get_metadata('instance-id','--instance-id--')
+AWS_EC2_INSTANCE_ID = get_metadata('instance-id', 'localhost')
 
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
         "verbose": {
-            "format": "{asctime} {levelname} ["+AWS_EC2_INSTANCE_ID+"] [{funcName}:{module}:{lineno}] {message}",
+            "format": "{asctime} {levelname} [" + AWS_EC2_INSTANCE_ID + "] [{funcName}:{module}:{lineno}] {message}",
             "style": "{",
         },
         "simple": {
@@ -204,17 +185,17 @@ LOGGING = {
             "formatter": "verbose",
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(BASE_DIR, "file.log"),
-            "maxBytes": 5 * 1024 ,  # 5 K
+            "maxBytes": 5 * 1024,  # 5 K
             "backupCount": 1,
             "encoding": None,
-            "delay": 0,
+            "delay": False,
         },
         "s3": {
             "level": "INFO",
             "formatter": "verbose",
             "class": "ccbda.S3RotatingFileHandler",
             "filename": os.path.join(BASE_DIR, "s3.log"),
-            "maxBytes": 5 * 1024 ,  # 5 K
+            "maxBytes": 5 * 1024,  # 5 K
             "backupCount": 1,
             "encoding": None,
             "delay": 0,
@@ -233,20 +214,19 @@ LOGGING = {
     },
 }
 
-# CloudFront CDN Configuration for Static Files
-CLOUD_FRONT = os.environ.get("CLOUD_FRONT", default='False') == 'True'
+CCBDA_SIGNUP_TABLE = os.getenv('CCBDA_SIGNUP_TABLE')
+AWS_REGION = os.getenv('AWS_REGION')
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_SESSION_TOKEN = os.getenv('AWS_SESSION_TOKEN')
+NEW_SIGNUP_TOPIC = os.getenv('NEW_SIGNUP_TOPIC')
+AWS_S3_BUCKET_NAME = os.getenv('AWS_S3_BUCKET_NAME')
+AWS_S3_LOGS_PREFIX = os.getenv('AWS_S3_LOGS_PREFIX')
 
-if CLOUD_FRONT:
-    # Production mode: Use S3 + CloudFront for static files
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Different from 'static' to avoid conflict
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME', 'ccbda-webapp-team20')
-    AWS_S3_CUSTOM_DOMAIN = f"{CLOUDFRONT_DISTRIBUTION_ID}.cloudfront.net"
-    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
-    # Source directory for collectstatic command
-    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-else:
-    # Development mode: Use local static files
-    STATIC_URL = 'static/'
-    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+RSS_URLS = [
+    'https://www.cloudcomputing-news.net/feed/',
+    'https://feeds.feedburner.com/cioreview/fvHK',
+    'https://www.techrepublic.com/rssfeeds/topic/cloud/',
+    'https://aws.amazon.com/blogs/aws/feed/',
+    'https://cloudtweaks.com/feed/',
+]

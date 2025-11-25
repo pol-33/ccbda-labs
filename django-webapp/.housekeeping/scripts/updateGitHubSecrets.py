@@ -8,8 +8,7 @@ from git import Repo
 
 trans = {
     'access_key': 'AWS_ACCESS_KEY_ID',
-    'secret_key': 'AWS_SECRET_ACCESS_KEY',
-    'token': 'AWS_SESSION_TOKEN'
+    'secret_key': 'AWS_SECRET_ACCESS_KEY'
 }
 
 otherSecrets = [
@@ -23,7 +22,7 @@ otherSecrets = [
 try:
     CONFIGURATION_FILE = sys.argv[1]
 except:
-    print('ERROR: filename missing\npython updateGitHubSecrets.py filename')
+    print('ERROR: filename missing\npython updateGitHubSecrets.py environment')
     exit()
 
 repo = Repo('.')

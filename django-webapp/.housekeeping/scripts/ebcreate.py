@@ -1,14 +1,13 @@
 from dotenv import dotenv_values
 import sys
 
-# instance profile and service role must be created beforehand
 ebOptions = {
     'min-instances': '1',
     'max-instances': '3',
     'instance_profile': 'aws-elasticbeanstalk-ec2-role',
-    'service-role': 'AWSServiceRoleForElasticBeanstalk',
+    'service-role': 'aws-elasticbeanstalk-service-role',
     'elb-type': 'application',
-    'instance-types':'t3.small',
+    'instance-types':'t3.micro',
     'keyname':'aws-eb'
 }
 
@@ -16,7 +15,7 @@ try:
     CONFIGURATION_FILE = sys.argv[1]
     HOSTNAME = sys.argv[2]
 except:
-    print('ERROR: filename missing\npython ebcreate.py filename hostname')
+    print('ERROR: filename missing\npython ebcreate.py environment hostname')
     exit()
 config = dotenv_values(CONFIGURATION_FILE)
 
@@ -32,9 +31,11 @@ for k, v in config.items():
 ebOptions['cname'] = HOSTNAME
 ebOptions['envvars'] = '"%s"' % ','.join(opt)
 
-
 opt = []
 for k, v in ebOptions.items():
     opt.append(f'--{k} {v}')
 
 print(f'eb create {HOSTNAME} %s ' % ' '.join(opt))
+
+if config['DJANGO_DEBUG'] is True:
+    sys.stderr.write('DJANGO_DEBUG is True!!!')

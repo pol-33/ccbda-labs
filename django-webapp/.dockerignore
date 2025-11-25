@@ -1,6 +1,6 @@
 .venv
 *.env
-../.gitignore
+.gitignore
 README.md
 compose.yml
 *.sqlite

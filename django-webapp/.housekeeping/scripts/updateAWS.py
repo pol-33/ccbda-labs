@@ -4,14 +4,13 @@ import sys
 
 trans = {
     'access_key': 'AWS_ACCESS_KEY_ID',
-    'secret_key': 'AWS_SECRET_ACCESS_KEY',
-    'token': 'AWS_SESSION_TOKEN'
+    'secret_key': 'AWS_SECRET_ACCESS_KEY'
 }
 
 try:
     CONFIGURATION_FILE = sys.argv[1]
 except:
-    print('ERROR: filename missing\npython updateAWS.py filename')
+    print('ERROR: filename missing\npython updateAWS.py environment')
     exit()
 
 config = dotenv_values(CONFIGURATION_FILE)

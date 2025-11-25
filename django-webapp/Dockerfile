@@ -1,5 +1,5 @@
 # Stage 1: Base build stage
-FROM python:3.13.2-slim AS builder
+FROM python:3.13.9-slim AS builder
 
 # Create the app directory
 RUN mkdir /app
@@ -21,7 +21,7 @@ COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Stage 2: Production stage
-FROM python:3.13.2-slim
+FROM python:3.13.9-slim
 
 RUN useradd -m -r appuser && \
    mkdir /app && \
@@ -52,4 +52,4 @@ USER appuser
 EXPOSE 8000
 
 # Start the application using Gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "ccbda.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "--timeout", "120", "ccbda.wsgi:application"]
