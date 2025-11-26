@@ -36,7 +36,8 @@ jobs:
           IMAGE_ADDR: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ github.ref_name }}
         run: |
           # Build a docker container and push it to ECR so that it can be deployed to Elastic Beanstalk.
-          echo "image=$IMAGE_ADDR" >> $GITHUB_OUTPUT          
+          echo "image=$IMAGE_ADDR" >> $GITHUB_OUTPUT
+          cd django-webapp
           docker build -t django-docker:${{ github.ref_name }} .
           docker tag django-docker:${{ github.ref_name }} $IMAGE_ADDR
           docker push $IMAGE_ADDR
@@ -50,7 +51,7 @@ jobs:
             result-encoding: string
             script: |
               const fs = require('fs');
-              const fpath = '.housekeeping/elasticbeanstalk/Dockerrun.aws.json';
+              const fpath = 'django-webapp/.housekeeping/elasticbeanstalk/Dockerrun.aws.json';
   
               try {
                 const jsonString = fs.readFileSync(fpath,'utf8')
@@ -68,7 +69,7 @@ jobs:
         id: eb-env
         run: |
           # Update  Dockerrun.aws.json
-          cd .housekeeping/elasticbeanstalk
+          cd django-webapp/.housekeeping/elasticbeanstalk
           zip -r ../${{ github.ref_name }}.zip Dockerrun.aws.json
           aws s3 cp "../${{ github.ref_name }}.zip" s3://elasticbeanstalk-us-east-1-${{ secrets.AWS_ACCOUNT_ID }}/${{ secrets.ELASTIC_BEANSTALK_APP_NAME }}/
           aws elasticbeanstalk create-application-version --application-name ${{ secrets.ELASTIC_BEANSTALK_APP_NAME }} --version-label ${{ github.sha }} --description ${{ github.ref_name }} --source-bundle S3Bucket="elasticbeanstalk-us-east-1-${{ secrets.AWS_ACCOUNT_ID }}",S3Key="${{ secrets.ELASTIC_BEANSTALK_APP_NAME }}/${{ github.ref_name }}.zip"
