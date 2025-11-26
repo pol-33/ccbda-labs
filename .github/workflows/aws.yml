@@ -3,7 +3,7 @@ name: Build new image and deploy to AWS Elastic Beanstalk
 on:
   push:
     tags:
-      - "v*.*.*"
+      - "v[0-9]+.[0-9]+.[0-9]+"
 
 permissions:
   contents: read
@@ -13,61 +13,31 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     environment: production
-    env:
-      SECRET_AWS_REGION_NAME: AWS_REGION
-      SECRET_AWS_ACCESS_KEY_ID_NAME: AWS_ACCESS_KEY_ID
-      SECRET_AWS_SECRET_ACCESS_KEY_NAME: AWS_SECRET_ACCESS_KEY
-      SECRET_AWS_ACCOUNT_ID_NAME: AWS_ACCOUNT_ID
-      SECRET_ECR_REPOSITORY_NAME: ECR_REPOSITORY
-      SECRET_EB_APP_NAME_NAME: ELASTIC_BEANSTALK_APP_NAME
-      SECRET_EB_ENV_NAME_NAME: ELASTIC_BEANSTALK_ENV_NAME
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Validate required secrets mapping
-        run: |
-          set -e
-          for var in SECRET_AWS_REGION_NAME SECRET_AWS_ACCESS_KEY_ID_NAME SECRET_AWS_SECRET_ACCESS_KEY_NAME SECRET_AWS_ACCOUNT_ID_NAME SECRET_ECR_REPOSITORY_NAME SECRET_EB_APP_NAME_NAME SECRET_EB_ENV_NAME_NAME; do
-            eval name=\${$var}
-            if [ -z "$name" ]; then
-              echo "❌ Missing mapping variable: $var" >&2
-              exit 1
-            fi
-          done
-          echo "✅ Mapping variables present"
-
-      - name: Show repository structure (debug)
-        run: |
-          echo "PWD: $(pwd)"
-          ls -1
-          echo "Dockerfile location expectation: ./django-webapp/django-webapp-main/Dockerfile"
-          if [ ! -f ./django-webapp/django-webapp-main/Dockerfile ]; then
-            echo "❌ Dockerfile not found at expected path" >&2
-            exit 1
-          fi
-
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets[env.SECRET_AWS_ACCESS_KEY_ID_NAME] }}
-          aws-secret-access-key: ${{ secrets[env.SECRET_AWS_SECRET_ACCESS_KEY_NAME] }}
-          aws-region: ${{ secrets[env.SECRET_AWS_REGION_NAME] }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
 
       - name: Login to AWS ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+        uses: aws-actions/amazon-ecr-login@v1
 
       - name: Build, tag, and push image to AWS ECR
         id: build-image
         env:
-          IMAGE_ADDR: ${{ steps.login-ecr.outputs.registry }}/${{ secrets[env.SECRET_ECR_REPOSITORY_NAME] }}:${{ github.ref_name }}
+          IMAGE_ADDR: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ github.ref_name }}
         run: |
-          set -e
-          echo "image=$IMAGE_ADDR" >> $GITHUB_OUTPUT
-          echo "::add-mask::$IMAGE_ADDR"
-          docker build -t django-docker:${{ github.ref_name }} ./django-webapp/django-webapp-main
+          # Build a docker container and push it to ECR so that it can be deployed to Elastic Beanstalk.
+          echo "image=$IMAGE_ADDR" >> $GITHUB_OUTPUT          
+          docker build -t django-docker:${{ github.ref_name }} .
           docker tag django-docker:${{ github.ref_name }} $IMAGE_ADDR
           docker push $IMAGE_ADDR
 
@@ -75,38 +45,32 @@ jobs:
         uses: actions/github-script@v7
         id: update-dockerrun
         env:
-          IMAGE_ADDR: ${{ steps.login-ecr.outputs.registry }}/${{ secrets[env.SECRET_ECR_REPOSITORY_NAME] }}:${{ github.ref_name }}
+          IMAGE_ADDR: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ github.ref_name }}
         with:
-          result-encoding: string
-          script: |
-            try {
-              const fpath = 'django-webapp/django-webapp-main/eb/Dockerrun.aws.json'
-              const fs = require('fs')
-              const jsonString = fs.readFileSync(fpath)
-              var apps = JSON.parse(jsonString)
-              apps["Image"]["Name"] = process.env.IMAGE_ADDR
-              fs.writeFileSync(fpath,JSON.stringify(apps))
-              return apps["Image"]["Name"]
-            } catch(err) {
-              core.error("Error while reading or parsing the JSON")
-              core.setFailed(err)
-            }
+            result-encoding: string
+            script: |
+              const fs = require('fs');
+              const fpath = '.housekeeping/elasticbeanstalk/Dockerrun.aws.json';
+  
+              try {
+                const jsonString = fs.readFileSync(fpath,'utf8')
+                var dockerRun = JSON.parse(jsonString)
+                dockerRun.Image.Name = process.env.IMAGE_ADDR
+                
+                fs.writeFileSync(fpath,JSON.stringify(dockerRun))
+                console.log("✅ Updated Dockerrun.aws.json with new image tag:");
+                console.log(JSON.stringify(dockerRun, null, 2));              
+              } catch (err) {
+                core.setFailed("❌ Failed to update Dockerrun.aws.json: " + err.message)
+              }
 
       - name: AWS Elastic Beanstalk environment
         id: eb-env
-        env:
-          EB_BUCKET: elasticbeanstalk-${{ secrets[env.SECRET_AWS_REGION_NAME] }}-${{ secrets[env.SECRET_AWS_ACCOUNT_ID_NAME] }}
         run: |
-          set -e
-          cd django-webapp/django-webapp-main/eb
-          zip -r ../${{github.ref_name}}.zip Dockerrun.aws.json
-          aws s3 cp "../${{github.ref_name}}.zip" s3://$EB_BUCKET/${{ secrets[env.SECRET_EB_APP_NAME_NAME] }}/
-          aws elasticbeanstalk create-application-version --application-name ${{ secrets[env.SECRET_EB_APP_NAME_NAME] }} --version-label ${{github.sha}} --description ${{github.ref_name}} --source-bundle S3Bucket="$EB_BUCKET",S3Key="${{ secrets[env.SECRET_EB_APP_NAME_NAME] }}/${{github.ref_name}}.zip"
-          aws elasticbeanstalk update-environment --application-name ${{ secrets[env.SECRET_EB_APP_NAME_NAME] }} --environment-name ${{ secrets[env.SECRET_EB_ENV_NAME_NAME] }} --version-label ${{github.sha}}
-          aws elasticbeanstalk wait environment-updated --application-name ${{ secrets[env.SECRET_EB_APP_NAME_NAME] }} --environment-name ${{ secrets[env.SECRET_EB_ENV_NAME_NAME] }}
-
-      - name: Summary
-        run: |
-          echo "Image deployed: ${{ steps.build-image.outputs.image }}"
-          echo "EB Application: ${{ secrets[env.SECRET_EB_APP_NAME_NAME] }}"
-          echo "EB Environment: ${{ secrets[env.SECRET_EB_ENV_NAME_NAME] }}"
+          # Update  Dockerrun.aws.json
+          cd .housekeeping/elasticbeanstalk
+          zip -r ../${{ github.ref_name }}.zip Dockerrun.aws.json
+          aws s3 cp "../${{ github.ref_name }}.zip" s3://elasticbeanstalk-us-east-1-${{ secrets.AWS_ACCOUNT_ID }}/${{ secrets.ELASTIC_BEANSTALK_APP_NAME }}/
+          aws elasticbeanstalk create-application-version --application-name ${{ secrets.ELASTIC_BEANSTALK_APP_NAME }} --version-label ${{ github.sha }} --description ${{ github.ref_name }} --source-bundle S3Bucket="elasticbeanstalk-us-east-1-${{ secrets.AWS_ACCOUNT_ID }}",S3Key="${{ secrets.ELASTIC_BEANSTALK_APP_NAME }}/${{ github.ref_name }}.zip"
+          aws elasticbeanstalk update-environment --application-name ${{ secrets.ELASTIC_BEANSTALK_APP_NAME }} --environment-name ${{ secrets.ELASTIC_BEANSTALK_ENV_NAME }} --version-label ${{ github.sha }}
+          aws elasticbeanstalk wait environment-updated --application-name ${{ secrets.ELASTIC_BEANSTALK_APP_NAME }} --environment-name ${{ secrets.ELASTIC_BEANSTALK_ENV_NAME }}
