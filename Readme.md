@@ -41,6 +41,9 @@
 >
 > **What we found interesting:** The CI/CD pipeline successfully builds and deploys new versions without manual intervention!
 >
+> **Screenshot:**
+>
+> ![Elastic Beanstalk Console](img/ebQ2.png)
 
 ---
 
@@ -71,6 +74,9 @@
 >
 > Successful deployment (after fix):
 > ![Successful Deployment](fotos/q3_correct_deploy.png)
+>
+> First successful deploy:
+> ![First Deploy](img/firstDeployQ3.png)
 >
 > **Thoughts on the Complete CI/CD Action:**
 > - The workflow completely automates the build-tag-push-deploy cycle, eliminating manual steps
@@ -155,25 +161,61 @@
 
 ### ❓ Question 6: Play with Kibana and the logs that you have obtained. Share your insights.
 
+> In Kibana we added a data view for the `logs-webapp` index and expanded the time range to cover the deployment window (last 1h). Dragging fields (`timestamp`, `loggerName`, `level`, `app`, `user`, `article`) into the table showed structured JSON log entries produced by the `django` logger.
 >
+> Navigating the home page generated entries with the `user` field from the cookie; clicking an article added both `user` and `article` (parsed final URL). We verified hits increment by filtering for documents containing the article URL and saw multiple entries.
+>
+> No errors were indexed, which confirms the Elasticsearch handler and JsonFormatter are working and ingestion latency is low enough for near real-time analysis.
+>
+> **Screenshot:**
+>
+> ![Kibana Logs](img/lastDeployQ6.png)
 
 ---
 
 ## How to submit this assignment:
 ### ❓ Question 7: Assess the current version of the web application against each of the twelve factor application.
 
->
+> | Factor | Assessment |
+> |--------|------------|
+> | **(1) Codebase** | Single repo and one codebase tracked in git |
+> | **(2) Dependencies** | Explicitly declared in `requirements.txt` (stronger pinning could be improved for security) |
+> | **(3) Config** | Environment variables used for secrets/region (could move remaining static values fully out of code) |
+> | **(4) Backing services** | DB, S3, CloudWatch, Elasticsearch treated as attached resources via config |
+> | **(5) Build, release, run** | GitHub Actions builds image, EB deploys—clear separation of stages |
+> | **(6) Processes** | Stateless web processes; state in Postgres/S3/Elasticsearch |
+> | **(7) Port binding** | Gunicorn binds to 8000 exposed via Docker/EB |
+> | **(8) Concurrency** | Scalable by adding EB instances; no explicit autoscaling rules yet |
+> | **(9) Disposability** | Fast start; graceful shutdown could be improved with explicit signal handling |
+> | **(10) Dev/prod parity** | Similar stack; minor region/config differences but manageable |
+> | **(11) Logs** | Treated as event streams, shipped to CloudWatch and ELK |
+> | **(12) Admin processes** | Maintenance scripts (ensure EB readiness, secret updater) run separately from the app lifecycle |
 
 ---
 
 ### ❓ Question 8: How long have you been working on this session? What have been the main difficulties that you have faced and how have you solved them? Add your answers to README.md.
 
+> **Time invested:** Several iterative cycles (~8 hours total) across CI setup and observability.
 >
+> **Main difficulties and solutions:**
+>
+> | Difficulty | Solution |
+> |------------|----------|
+> | Mismatched secret names | Dynamic mapping in the workflow |
+> | Invalid requirement (`logging==0.4.9.6`) | Removed from requirements.txt (logging is a built-in Python module) |
+> | Docker build path errors | Fixed relative context by adding `cd django-webapp` in workflow |
+> | Region inconsistency (`NoRegionError`) | Created explicit boto3 client with `region_name=AWS_REGION` at the top of settings.py |
+> | Integrating CloudWatch/ELK handlers | Added dependencies (`watchtower`, `elasticsearch`) and guarded imports with try/except |
+> | Container crash on deployment | Used lazy initialization for handlers and moved AWS_REGION definition before LOGGING config |
+>
+> Each issue was addressed incrementally with small commits and retagging for clear verification.
 
 ---
 
 ### ❓ Question 9: Using the AWS Billing and Cost Management Service, access the "Cost Explorer" and capture the cost of last week Using the "Dimension" "Service" where you can see how much did you spend to complete the session in total and per service.
 
+> **Cost Explorer Screenshot:**
 >
+> ![AWS Cost Explorer](img/q9.png)
 
 ---
