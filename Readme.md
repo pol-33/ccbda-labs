@@ -83,7 +83,33 @@
 
 ### ❓ Question 4: What does the above script do and how can you use it?
 
+> The `updateGitHubSecrets.py` script automates the configuration of GitHub Secrets required for the CI/CD pipeline.
 >
+> 1. **Extracts AWS Credentials**: Uses `boto3` to get the current AWS session credentials (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`) and account ID
+>
+> 2. **Reads Configuration**: Loads environment variables from the specified `.env` file including:
+>    - `AWS_REGION`
+>    - `ECR_REPOSITORY`
+>    - `CONTAINER_NAME`
+>    - `ELASTIC_BEANSTALK_APP_NAME`
+>    - `ELASTIC_BEANSTALK_ENV_NAME`
+>
+> 3. **Updates GitHub Secrets**: Connects to GitHub using a Personal Access Token (`GITHUB_TOKEN`) and automatically creates/updates all the required secrets in the repository's Actions settings
+>
+> 4. **Updates Dockerrun.aws.json**: Creates or updates the `Dockerrun.aws.json` file in both the local `.housekeeping/elasticbeanstalk/` directory and the remote `eb/` folder in the GitHub repository
+>
+> **Usage:**
+> ```bash
+> cd django-webapp/.housekeeping/scripts
+> python updateGitHubSecrets.py ../../aws.env
+> ```
+>
+> **What do we need in advance?:**
+> - A GitHub Personal Access Token with `repo` permissions stored in the `.env` file as `GITHUB_TOKEN`
+> - AWS CLI configured with valid credentials
+>
+> **Why is this useful?**
+> Instead of manually adding each secret through the GitHub web interface (as shown in our screenshot), this script automates the entire process.
 
 ---
 
