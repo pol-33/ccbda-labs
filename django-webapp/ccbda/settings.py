@@ -271,4 +271,4 @@ RSS_URLS = [
 # ELK (Elasticsearch, Logstash, Kibana) Configuration
 ELK_PASSWORD = os.environ.get('ELK_PASSWORD')
 ELK_CLOUD_ID = os.environ.get('ELK_CLOUD_ID')
-AWS_DEFAULT_REGION = os.environ.get('AWS_DEFAULT_REGION', AWS_REGION)
+AWS_DEFAULT_REGION = os.environ.get('AWS_DEFAULT_REGION', 'us-east-1')

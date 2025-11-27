@@ -64,26 +64,13 @@ class ElasticsearchHandler(logging.handlers.BufferingHandler):
     def __init__(self, index="logs", capacity=100):
         # capacity: number of logging records buffered
         super().__init__(capacity=capacity)
-        self._es_client = None  # Lazy initialization
+        self.es_client = Elasticsearch(
+            cloud_id=settings.ELK_CLOUD_ID, 
+            basic_auth=("elastic", settings.ELK_PASSWORD)
+        )
         self.index = index
 
-    @property
-    def es_client(self):
-        """Lazy initialization of Elasticsearch client."""
-        if self._es_client is None:
-            try:
-                self._es_client = Elasticsearch(
-                    cloud_id=settings.ELK_CLOUD_ID, 
-                    basic_auth=("elastic", settings.ELK_PASSWORD)
-                )
-            except Exception as e:
-                logger_root.warning(f"Failed to initialize Elasticsearch client: {e}")
-                return None
-        return self._es_client
-
     def emit(self, record):
-        if self.es_client is None:
-            return
         try:
             log_entry = self.format(record)
             # Send the log entry to Elasticsearch
@@ -92,9 +79,6 @@ class ElasticsearchHandler(logging.handlers.BufferingHandler):
             self.handleError(record)
 
     def flush(self):
-        if self.es_client is None:
-            self.buffer = []
-            return
         for record in self.buffer:
             try:
                 log_entry = self.format(record)
