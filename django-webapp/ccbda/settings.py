@@ -174,6 +174,25 @@ LOGGING = {
             "format": "{asctime} {levelname} {message}",
             "style": "{",
         },
+        "simple_nots": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+        "json-record-format": {
+            "()": "ccbda.JsonFormatter",
+            "basic": {
+                "timestamp": "asctime",
+                "loggerName": "name",
+                "level": "levelname",
+                "message": "message",
+                "function": "funcName",
+                "module": "module",
+                "line": "lineno",
+            },
+            "extra": {
+                "instance": AWS_EC2_INSTANCE_ID,
+            }
+        }
     },
     "handlers": {
         "console": {
@@ -200,14 +219,32 @@ LOGGING = {
             "encoding": None,
             "delay": 0,
         },
+        "elk": {
+            "level": "DEBUG",
+            "formatter": "json-record-format",
+            "class": "ccbda.ElasticsearchHandler",
+            "index": "logs-webapp",
+        },
+        "cloudwatch": {
+            "level": "DEBUG",
+            "formatter": "simple_nots",
+            "class": "watchtower.CloudWatchLogHandler",
+            "log_group": "django-webapp",
+            "log_stream_name": AWS_EC2_INSTANCE_ID + "/{logger_name}/{process_id}",
+        }
     },
     "root": {
-        "handlers": ["console"],
+        "handlers": ["console", "cloudwatch"],
         "level": "INFO",
     },
     "loggers": {
+        "django.server": {
+            "handlers": ["console", "cloudwatch"],
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "propagate": False,
+        },
         "django": {
-            "handlers": ["console", "file", "s3"],
+            "handlers": ["console", "file", "s3", "elk"],
             "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
             "propagate": False,
         },
@@ -230,3 +267,8 @@ RSS_URLS = [
     'https://aws.amazon.com/blogs/aws/feed/',
     'https://cloudtweaks.com/feed/',
 ]
+
+# ELK (Elasticsearch, Logstash, Kibana) Configuration
+ELK_PASSWORD = os.environ.get('ELK_PASSWORD')
+ELK_CLOUD_ID = os.environ.get('ELK_CLOUD_ID')
+AWS_DEFAULT_REGION = os.environ.get('AWS_DEFAULT_REGION', AWS_REGION)
