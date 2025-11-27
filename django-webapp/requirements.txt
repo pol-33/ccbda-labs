@@ -38,4 +38,3 @@ urllib3==2.5.0
 wrapt==2.0.1
 watchtower==3.4.0
 elasticsearch==9.2.0
-logging==0.4.9.6
