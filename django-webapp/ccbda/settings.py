@@ -12,11 +12,15 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
-import json
 from dotenv import load_dotenv
 import requests
 import logging
-import form.apps
+
+# Optional import to satisfy analyzers; handler is referenced by dotted path in LOGGING
+try:
+    import watchtower  # noqa: F401
+except Exception:
+    watchtower = None
 
 logger = logging.getLogger()
 
@@ -231,7 +235,7 @@ LOGGING = {
             "class": "watchtower.CloudWatchLogHandler",
             "log_group": "django-webapp",
             "log_stream_name": AWS_EC2_INSTANCE_ID + "/{logger_name}/{process_id}",
-        }
+        },
     },
     "root": {
         "handlers": ["console", "cloudwatch"],
@@ -244,7 +248,7 @@ LOGGING = {
             "propagate": False,
         },
         "django": {
-            "handlers": ["console", "file", "s3", "elk"],
+            "handlers": ["elk"],
             "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
             "propagate": False,
         },
