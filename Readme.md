@@ -116,7 +116,40 @@
 ## Task 7.2: Observability using AWS CloudWatch, Elastic and Kibana
 ### ❓ Question 5: Play with AWS CloudWatch and the logs that you have obtained. Share your insights.
 
-> Added Cloudwatch permissions to role so we can test it through localhost and works (image q5_cloudwatch_localhost.png)
+> **CloudWatch Configuration:**
+>
+> We configured the Django application to send logs to AWS CloudWatch using the `watchtower` library. The key configuration in `settings.py` includes:
+>
+> ```python
+> "cloudwatch": {
+>     "level": "DEBUG",
+>     "formatter": "simple_nots",
+>     "class": "watchtower.CloudWatchLogHandler",
+>     "log_group": "django-webapp",
+>     "log_stream_name": AWS_EC2_INSTANCE_ID + "/{logger_name}/{process_id}",
+>     "boto3_client": cloudwatch_logs_client,
+>     "create_log_group": False,
+> }
+> ```
+>
+> **Challenges Encountered:**
+>
+> 1. **IAM Permissions**: We wanted to try the log events locally, before pushing the changes to the deployed environment. Initially, the local user (`lab4_user`) didn't have `logs:PutLogEvents` permission. We added CloudWatch permissions to the IAM role. We only needed to do this for local testing, because the deployed environment's role already had the necessary permissions.
+>
+> 2. **Region Configuration**: The deployment failed with `NoRegionError: You must specify a region`. We fixed this by creating an explicit boto3 client with the region defined at the top of `settings.py`:
+>    ```python
+>    AWS_REGION = os.getenv('AWS_REGION', 'us-east-1')
+>    cloudwatch_logs_client = boto3.client('logs', region_name=AWS_REGION)
+>    ```
+>
+> **Screenshots:**
+>
+> CloudWatch working with local version:
+> ![CloudWatch Localhost](fotos/q5_cloudwatch_localhost.png)
+>
+> CloudWatch working on deployed environment:
+> ![CloudWatch Deploy](fotos/q5_cloudwatch_deploy.png)
+>
 
 ---
 
