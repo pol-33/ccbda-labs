@@ -15,6 +15,7 @@ import os
 from dotenv import load_dotenv
 import requests
 import logging
+import boto3
 
 # Optional import to satisfy analyzers; handler is referenced by dotted path in LOGGING
 try:
@@ -23,6 +24,18 @@ except Exception:
     watchtower = None
 
 logger = logging.getLogger()
+
+# Load environment variables early
+load_dotenv()
+
+# AWS Region - needed for CloudWatch handler
+AWS_REGION = os.getenv('AWS_REGION', 'us-east-1')
+
+# Create boto3 client for CloudWatch logs with explicit region
+try:
+    cloudwatch_logs_client = boto3.client('logs', region_name=AWS_REGION)
+except Exception:
+    cloudwatch_logs_client = None
 
 
 def get_metadata(path='', default=''):
@@ -41,9 +54,6 @@ def get_metadata(path='', default=''):
         logger.warning(f"Error accessing metadata: {e}")
         return default
 
-
-# Load environment variables from a .env file
-load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -235,6 +245,8 @@ LOGGING = {
             "class": "watchtower.CloudWatchLogHandler",
             "log_group": "django-webapp",
             "log_stream_name": AWS_EC2_INSTANCE_ID + "/{logger_name}/{process_id}",
+            "boto3_client": cloudwatch_logs_client,
+            "create_log_group": False,
         },
     },
     "root": {
@@ -256,7 +268,7 @@ LOGGING = {
 }
 
 CCBDA_SIGNUP_TABLE = os.getenv('CCBDA_SIGNUP_TABLE')
-AWS_REGION = os.getenv('AWS_REGION')
+# AWS_REGION is defined at the top of the file
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_SESSION_TOKEN = os.getenv('AWS_SESSION_TOKEN')
@@ -275,4 +287,4 @@ RSS_URLS = [
 # ELK (Elasticsearch, Logstash, Kibana) Configuration
 ELK_PASSWORD = os.environ.get('ELK_PASSWORD')
 ELK_CLOUD_ID = os.environ.get('ELK_CLOUD_ID')
-AWS_DEFAULT_REGION = os.environ.get('AWS_DEFAULT_REGION', 'us-east-1')
+AWS_DEFAULT_REGION = os.environ.get('AWS_DEFAULT_REGION', AWS_REGION)
