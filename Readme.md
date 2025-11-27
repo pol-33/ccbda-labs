@@ -116,7 +116,7 @@
 ## Task 7.2: Observability using AWS CloudWatch, Elastic and Kibana
 ### ❓ Question 5: Play with AWS CloudWatch and the logs that you have obtained. Share your insights.
 
->
+> Added Cloudwatch permissions to role so we can test it through localhost and works (image q5_cloudwatch_localhost.png)
 
 ---
 
