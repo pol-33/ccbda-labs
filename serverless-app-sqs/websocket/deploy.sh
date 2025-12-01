@@ -13,15 +13,6 @@ done
 ENVIRONMENT=$(IFS=, ; echo "${ENVIRONMENT_VARIABLES[*]}")
 echo "ENVIRONMENT: ${ENVIRONMENT}"
 
-aws kinesis create-stream \
-    --stream-name ${STREAM_NAME} \
-    --shard-count 1
-
-STREAM_ARN=`aws kinesis describe-stream \
-    --stream-name ${STREAM_NAME} \
-    | jq -r '.StreamDescription.StreamARN'`
-echo "STREAM_ARN: ${STREAM_ARN}"
-
 echo "Creating dynamo table ${DYNAMO_TABLE}"
 aws dynamodb create-table \
   --table-name ${DYNAMO_TABLE} \
@@ -32,12 +23,21 @@ aws dynamodb create-table \
   --billing-mode PAY_PER_REQUEST \
   --region ${REGION}
 
-pushd lambda/kinesis
-zip lambda_kinesis.zip lambda_kinesis.py requirements.txt
+QUEUE_URL=`aws sqs create-queue \
+  --queue-name ${QUEUE_NAME} \
+  | jq -r '.QueueUrl'`
+
+QUEUE_ARN=`aws sqs get-queue-attributes \
+   --queue-url ${QUEUE_URL} \
+   --attribute-names QueueArn \
+   | jq -r '.Attributes.QueueArn'`
+
+pushd lambda/sqs
+zip lambda_sqs.zip lambda_sqs.py requirements.txt
 LAMBDA_ARN=`aws lambda create-function \
-  --function-name ${LAMBDA_KINESIS} \
-  --zip-file fileb://lambda_kinesis.zip \
-  --handler lambda_kinesis.lambda_handler \
+  --function-name ${LAMBDA_SQS} \
+  --zip-file fileb://lambda_sqs.zip \
+  --handler lambda_sqs.lambda_handler \
   --runtime python3.13 \
   --role ${ROLE} \
   --environment "Variables={${ENVIRONMENT}}" \
@@ -45,10 +45,8 @@ LAMBDA_ARN=`aws lambda create-function \
 echo "LAMBDA_ARN: ${LAMBDA_ARN}"
 
 aws lambda create-event-source-mapping \
-    --event-source  ${STREAM_ARN} \
-    --function-name ${LAMBDA_KINESIS} \
-    --batch-size 100 \
-    --starting-position LATEST
+    --event-source ${QUEUE_ARN} \
+    --function-name ${LAMBDA_SQS}
 popd
 
 

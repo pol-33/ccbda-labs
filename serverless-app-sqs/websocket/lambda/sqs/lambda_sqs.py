@@ -12,13 +12,12 @@ logger.setLevel(os.getenv('LOG_LEVEL'))
 
 
 def lambda_handler(event, context):
+    logger.debug(f'event {json.dumps(event, indent=2)}')
     for record in event['Records']:
         try:
-            record_data = base64.b64decode(record['kinesis']['data']).decode('utf-8')
-            logger.debug(f'event {json.dumps(event, indent=2)}')
             message = json.dumps({
                 'type': 'show',
-                'aircrafts': json.loads(record_data)
+                'aircrafts': json.loads(record['body'])
             })
             dynamodb = boto3.client('dynamodb', region_name=REGION)
             response = dynamodb.scan(TableName=DYNAMO_TABLE)
