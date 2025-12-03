@@ -165,6 +165,8 @@ To make the deployment work, the following **Secrets** must be configured in the
 ![Lambda Functions Deployed](imatges/11_Lambda_Functions_Deployed.png)
 *Figure: The four Lambda functions successfully deployed in the AWS Console.*
 
+![GitHub Actions Workflow Q8](imatges/12_GitHub_Actions_Websockets.png)
+*Figure: GitHub Actions workflow run showing the successful concurrent deployment of all WebSocket Lambda functions.*
 
 ---
 
