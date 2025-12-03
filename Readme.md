@@ -57,7 +57,23 @@ We also implemented several changes in the script, as it was failing in some par
 
 ### ❓ Question 5: Create a GitHub Action to deploy the changes in the Lambda function.
 
->
+We have created a GitHub Actions workflow (`.github/workflows/deploy_lambda.yml`) that automatically deploys changes to the AWS Lambda function when code is pushed to the `crud/lambda` folder. Only changes in this folder will trigger the deployment process.
+
+To make the deployment work, the following **Secrets** must be configured in the GitHub Repository settings (`Settings` -> `Secrets and variables` -> `Actions`):
+
+| Secret Name | Description |
+| :--- | :--- |
+| `AWS_ACCESS_KEY_ID` | The Access Key ID for the `lab_serverless_user` IAM user. |
+| `AWS_SECRET_ACCESS_KEY` | The Secret Access Key for the IAM user. |
+| `AWS_REGION` | The AWS Region where the infrastructure is deployed. |
+
+> **Note:** The workflow performs a code update (`aws lambda update-function-code`). It assumes that the underlying infrastructure (Lambda Function "LambdaCRUD", DynamoDB, and API Gateway) has already been provisioned using the `deploy.sh` script.
+
+**How it works:**
+1. Trigger: The workflow is triggered only when a push occurs to the main branch and specifically affects files inside the crud/lambda/ directory.
+2. Authentication: It uses the aws-actions/configure-aws-credentials action to log in to AWS using the lab_serverless_user credentials, which are stored securely in GitHub Repository Secrets.
+3. Packaging: It runs the standard Linux zip command to package lambda_crud.py and requirements.txt into an archive, replicating the behavior of the local deploy.sh script.
+4. Deployment: It executes the aws lambda update-function-code command. This updates the code of the existing "LambdaCRUD" function in the specified region (ex. eu-south-2) without modifying the infrastructure (DynamoDB or API Gateway).
 
 ---
 
