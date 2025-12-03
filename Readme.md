@@ -172,8 +172,6 @@ To make the deployment work, the following **Secrets** must be configured in the
 
 ### ❓ Question 9: Assess the current version of the web application against each of the twelve factor application.
 
-### ❓ Question 9: Assess the current version of the web application against each of the twelve factor application.
-
 | Factor | Assessment | Verdict |
 | :--- | :--- | :--- |
 | **1. Codebase** | All components (SQS Handler, WebSocket logic, Frontend) are in the same repository. Code is deployed to the AWS environment using the `deploy.sh` script or GitHub Actions. | **Passed** ✅ |
@@ -187,36 +185,81 @@ To make the deployment work, the following **Secrets** must be configured in the
 | **9. Disposability** | The system is robust. If the SQS processing Lambda crashes, the message returns to the queue (visibility timeout) and is retried by a new process, ensuring no data loss. Connection cleanup is handled by the `$disconnect` route. | **Passed** ✅ |
 | **10. Dev/Prod Parity** | Local testing for WebSockets + SQS is significantly harder than REST. The inability to easily run the full stack locally creates a gap in the "Dev" experience. | **Partial / Mixed** ⚠️/✅ |
 | **11. Logs** | Logs are split across 4 different Log Groups (one for each Lambda function). CloudWatch centralizes these streams. Observability is maintained despite the distributed nature of the microservices. | **Passed** ✅ |
-| **12. Admin Processes** | Data injection (the `feed_sqs.py` or similar scripts) runs as a standalone process to populate the queue, completely decoupled from the web application logic. Database creation remains an admin task in the deploy script. | **Passed** ✅ |
+| **12. Admin Processes** | Data injection (the `sendFlights.py`) runs as a standalone process to populate the queue, completely decoupled from the web application logic. Database creation remains an admin task in the deploy script. | **Passed** ✅ |
 
 ---
 
 ### ❓ Question 10: Provide screenshots of the significant AWS SQS metrics shown in the "Monitoring" tab.
 
->
+To generate these metrics, we executed the local Python script `sendFlights.py` (running in a virtual environment with `FlightRadar24API`). This script acts as the data producer, fetching real-time flight data and pushing it into the `flightQueue` SQS queue.
+
+![SendFlights Script](imatges/14_SendFlights_Script_Running.png)
+*Figure: The local python script sending flight events to the SQS queue.*
+
+The following screenshots from the AWS SQS Console (Monitoring tab) demonstrate the system's behavior under load:
+
+**Analysis of the Metrics:**
+1.  **Sent vs Received:** The "Number of Messages Sent" (bottom middle) and "Number of Messages Received" (bottom left) graphs show a correlated rise. This confirms that for every flight data packet we send, the Lambda consumer is successfully picking it up.
+2.  **Queue Depth:** The "Approximate Number of Messages Visible" (top right) spikes briefly to 1 but immediately drops. This is excellent behavior; it means the Lambda function is processing messages almost instantly, preventing a backlog.
+3.  **Latency:** The "Approximate Age of Oldest Message" (top left) remains at zero, confirming real-time processing.
+
+![SQS Metrics](imatges/16_SQS_Metrics.png)
+*Figure: AWS SQS Monitoring dashboard metrics*
 
 ---
 
 ### ❓ Question 11: Provide screenshots of the DynamoDB table used.
 
->
+In the WebSocket architecture, DynamoDB plays a critical role in managing state for the stateless Lambda functions. The table `flightRadar` stores the active connection IDs.
+
+*   **Partition Key:** `connectionid` (String). Unique identifier for every browser tab connected.
+*   **Attributes:**
+    *   `url`: The callback URL used by `boto3` to send messages back to that specific client.
+    *   `when`: Timestamp of connection.
+
+![DynamoDB Table App2](imatges/18_DynamoDB_Table_App2.png)
+*Figure: The 'flightRadar' table showing active WebSocket connections.*
+
+*(For reference, here is the table from the first task 8.1)*
+![DynamoDB Table App1](imatges/17_DynamoDB_Table_App1.png)
+*Figure: The 'ccbda-lambda-first' table used in the REST API task.*
 
 ---
 
 ### ❓ Question 12: Share your thoughts about the web application.
->
+
+This task demonstrated us the power that can have Event-Driven Architectures combined with WebSockets for real-time applications.
+
+**Observations:**
+1.  **Real-Time Efficiency:** Unlike the REST API where the client initiates every interaction, here the server (Lambda) pushes data to the client. This "Push" model is significantly more efficient than "Polling" for tracking moving objects like planes. We think this is very interesting because it reduces latency and network overhead.
+2.  **Complexity:** The architecture is more complex than the REST API. We needed:
+    *   **SQS** to buffer the flight data.
+    *   **DynamoDB** to "remember" who is connected (since Lambda forgets immediately).
+    *   **3+1 Lambdas** to handle the different lifecycle events.
+3.  **Visualization:** The integration with Leaflet and Geoapify provided immediate visual feedback. We could see the planes moving on the map in real-time as the `sendFlights.py` script injected data into the cloud. At the same time, we could observe the WebSocket handshake and message flow in the browser console, confirming the real-time communication. This has helped us to visualize how WebSockets work with a real example.
+
+**Testing Evidence:**
+![Flight App Init](imatges/13_FlightApp_Initialization_Websockets.png)
+*Figure: Console logs showing the WebSocket handshake and initialization ('hello!' -> 'init').*
+
+![Flight App Working](imatges/15_FlightApp_Working_Websockets.png)
+*Figure: The fully functional application showing aircraft markers moving in real-time on the map.*
 
 ---
 
 ## How to submit this assignment:
 ### ❓ Question 13: How long have you been working on this session? What have been the main difficulties that you have faced and how have you solved them? Add your answers to README.md.
 
->
+**Time spent:** Approximately 8 hours.
+
+**Main Difficulties & Solutions:**
+1.  **Permissions Granularity:** The script failed initially because the `lab_serverless_user` lacked the `logs:CreateLogDelivery` permission. We solved this by identifying the error message in the terminal and manually attaching the `CloudWatchLogsFullAccess` policy in the IAM console.
+2.  **Script Limitations:** The original `deploy.sh` script failed if run more than once because it tried to recreate existing resources (Tables, Functions). We improved the script by adding checks (e.g., `|| true` or checking exit codes) to update resources if they already existed instead of crashing.
+3.  **CORS Issues:** Browsers blocked the application when opening `index.html` as a file. We solved this by spinning up a simple Python HTTP server (`python3 -m http.server 8000`).
 
 ---
 
 ### ❓ Question 14: Using the AWS Billing and Cost Management Service, access the "Cost Explorer" and capture the cost of last week Using the "Dimension" "Service" where you can see how much you did spend to complete the session in total and per service.
 
->
-
+![AWS Cost Explorer](imatges/19_AWS_Cost_Explorer.png)
 ---
