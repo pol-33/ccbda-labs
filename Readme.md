@@ -172,7 +172,22 @@ To make the deployment work, the following **Secrets** must be configured in the
 
 ### ❓ Question 9: Assess the current version of the web application against each of the twelve factor application.
 
->
+### ❓ Question 9: Assess the current version of the web application against each of the twelve factor application.
+
+| Factor | Assessment | Verdict |
+| :--- | :--- | :--- |
+| **1. Codebase** | All components (SQS Handler, WebSocket logic, Frontend) are in the same repository. Code is deployed to the AWS environment using the `deploy.sh` script or GitHub Actions. | **Passed** ✅ |
+| **2. Dependencies** | Dependencies are managed via `requirements.txt`. A key difference here is the `library_functions.py` shared module. The build script correctly packages this dependency into every Lambda zip file that needs it, ensuring isolation. | **Passed** ✅ |
+| **3. Config** | The app relies heavily on environment variables (`API_KEY`, `CENTER`, `QUEUE_NAME`, `DYNAMO_TABLE`). These are injected during deployment. The frontend configuration is dynamically generated into `variables.json` based on the deployed resources. | **Passed** ✅ |
+| **4. Backing Services** | The architecture has grown to include **SQS** (queueing) and **Geoapify** (external API) alongside DynamoDB. These are all treated as attached resources accessed via credentials/URLs, with no distinction between local or third-party services. | **Passed** ✅ |
+| **5. Build, Release, Run** | The distinction remains strict. The `deploy.sh` creates the artifact (Build), updates the AWS configuration (Release), and AWS manages the execution (Run). GitHub Actions further automates the Build/Release stages. | **Passed** ✅ |
+| **6. Processes** | WebSocket connections are stateful, but the Lambda functions remain stateless. Instead of storing the "Connection ID" in the Lambda's RAM, it is offloaded to the `flightRadar` DynamoDB table. This allows any Lambda instance to push messages to any user. | **Passed** ✅ |
+| **7. Port Binding** | The application exports services via `wss://` (WebSocket Secure) protocol through API Gateway. While the Lambda doesn't bind to a port manually, it exports its service via API Gateway (HTTP), effectively binding to the web. | **Partial / Mixed** ⚠️/✅ |
+| **8. Concurrency** | Concurrency is handled in two ways: 1) API Gateway scales to handle incoming WebSocket connections. 2) The SQS Lambda scales horizontally to process the flight data queue. If the queue floods, AWS spins up more consumers automatically. | **Passed** ✅ |
+| **9. Disposability** | The system is robust. If the SQS processing Lambda crashes, the message returns to the queue (visibility timeout) and is retried by a new process, ensuring no data loss. Connection cleanup is handled by the `$disconnect` route. | **Passed** ✅ |
+| **10. Dev/Prod Parity** | Local testing for WebSockets + SQS is significantly harder than REST. The inability to easily run the full stack locally creates a gap in the "Dev" experience. | **Partial / Mixed** ⚠️/✅ |
+| **11. Logs** | Logs are split across 4 different Log Groups (one for each Lambda function). CloudWatch centralizes these streams. Observability is maintained despite the distributed nature of the microservices. | **Passed** ✅ |
+| **12. Admin Processes** | Data injection (the `feed_sqs.py` or similar scripts) runs as a standalone process to populate the queue, completely decoupled from the web application logic. Database creation remains an admin task in the deploy script. | **Passed** ✅ |
 
 ---
 
