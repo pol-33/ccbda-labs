@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'crud/lambda/**' # Only triggers when the python code changes
+      - 'serverless-app-sqs/crud/lambda/**' # Only triggers when the python code changes
 
 jobs:
   deploy:
@@ -24,14 +24,14 @@ jobs:
 
     - name: Package Lambda Function
       run: |
-        cd crud/lambda
         # We zip the source code and the requirements file
+        cd serverless-app-sqs/crud/lambda
         zip -r lambda_crud.zip lambda_crud.py requirements.txt
 
     - name: Deploy (Update Code)
       run: |
-        cd crud/lambda
         # We only update the code, we do not touch the infrastructure
+        cd serverless-app-sqs/crud/lambda
         aws lambda update-function-code \
           --function-name LambdaCRUD \
           --zip-file fileb://lambda_crud.zip
