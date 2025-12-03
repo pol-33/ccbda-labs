@@ -13,7 +13,20 @@
 
 ### ❓ Question 2: Assess the current version of the web application against each of the twelve factor application.
 
-> 
+>  Factor | Assessment | Verdict |
+| :--- | :--- | :--- |
+| **1. Codebase** | All code (Lambda, HTML, scripts) is tracked in a single version control repository (the git zip/folder we obtained), and deployed to different environments (though you only deployed one). | **Passed** ✅ |
+| **2. Dependencies** | Dependencies are explicitly declared in `requirements.txt`. The deployment script uses this file to package the application, ensuring the correct dependencies are used. | **Passed** ✅ |
+| **3. Config** | Configuration is strictly separated from code. We initially store config in environment variables (`REGION`, `LOG_LEVEL`) injected into the Lambda environment at deployment time, and `variables.json` for the frontend. Later on the lab, we improve this by settign the necessary env file for the script to work.  | **Passed** ✅ |
+| **4. Backing Services** | DynamoDB is treated as an attached resource. The app connects via an API endpoint (handled by Boto3 and AWS region), not a local file path. Swapping the database just requires changing the `TableName` or Region. | **Passed** ✅ |
+| **5. Build, Release, Run** | The separation is strict. <br>1. **Build:** `zip` command creates the artifact.<br>2. **Release:** `aws lambda update-function-code` combines the build with config.<br>3. **Run:** AWS executes the function. | **Passed** ✅ |
+| **6. Processes** | The app is stateless. The Lambda function executes and dies. No state is shared between requests in memory, everything persists in DynamoDB. | **Passed** ✅ |
+| **7. Port Binding** | The app is self-contained. While the Lambda doesn't bind to a port manually, it exports its service via API Gateway (HTTP), effectively binding to the web. | **Partial / Mixed** ⚠️/✅ |
+| **8. Concurrency** | Scaling is handled via the process model. Each request spawns a new Lambda execution environment. We don't manage threads, AWS scales the processes horizontally automatically. | **Passed** ✅ |
+| **9. Disposability** | Lambda functions have fast startup and graceful shutdown. They are designed to handle immediate termination without data corruption (due to statelessness). | **Passed** ✅ |
+| **10. Dev/Prod Parity** | We are deploying directly to the cloud, so "Dev" is technically "Prod" in this lab. However, using the `deploy.sh` script ensures that every deployment (whether for testing or production) is identical, minimizing divergence. | **Partial / Mixed** ⚠️/✅ |
+| **11. Logs** | The application writes to `stdout`. AWS CloudWatch captures these streams automatically for analysis. | **Passed** ✅ |
+| **12. Admin Processes** | Administrative tasks (like creating the database table) are run as one-off processes via the AWS CLI in the `deploy.sh` script, separate from the running application logic. | **Passed** ✅ |
 
 ---
 
