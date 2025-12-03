@@ -1,0 +1,67 @@
+name: Deploy WebSocket Lambdas
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      # Only trigger if files in the websocket/lambda folder change
+      - 'serverless-app-sqs/websocket/lambda/**'
+
+jobs:
+  deploy-websockets:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    # ---------------------------------------------------
+    # 1. Deploy the SQS Processor Function
+    # ---------------------------------------------------
+    - name: Deploy SQS Lambda
+      run: |
+        cd serverless-app-sqs/websocket/lambda/sqs
+        zip -r lambda_sqs.zip lambda_sqs.py requirements.txt
+        
+        aws lambda update-function-code \
+          --function-name Sqs \
+          --zip-file fileb://lambda_sqs.zip
+
+    # ---------------------------------------------------
+    # 2. Deploy the WebSocket Functions (Connect, Disconnect, Default)
+    # ---------------------------------------------------
+    - name: Deploy WebSocket Connect
+      run: |
+        cd serverless-app-sqs/websocket/lambda/websocket
+        # Note: We must include library_functions.py
+        zip lambda_connect.zip lambda_connect.py library_functions.py requirements.txt
+        
+        aws lambda update-function-code \
+          --function-name WebSocket_connect \
+          --zip-file fileb://lambda_connect.zip
+
+    - name: Deploy WebSocket Disconnect
+      run: |
+        cd serverless-app-sqs/websocket/lambda/websocket
+        zip lambda_disconnect.zip lambda_disconnect.py library_functions.py requirements.txt
+        
+        aws lambda update-function-code \
+          --function-name WebSocket_disconnect \
+          --zip-file fileb://lambda_disconnect.zip
+
+    - name: Deploy WebSocket Default
+      run: |
+        cd serverless-app-sqs/websocket/lambda/websocket
+        zip lambda_default.zip lambda_default.py library_functions.py requirements.txt
+        
+        aws lambda update-function-code \
+          --function-name WebSocket_default \
+          --zip-file fileb://lambda_default.zip

@@ -132,13 +132,39 @@ In conclusion, this architecture provides a very powerful option for modern appl
 ## Task 8.2: Simple serverless web application using WebSockets
 ### ❓ Question 7: Go to one of the lambda functions and change the value of LOG_LEVEL from INFO to DEBUG in the "Configuration" tab "Environment variables" section. Do you need to redeploy the Lambda Function to have more details on the logs? Why?
 
->
+No, we do not need to redeploy the Lambda function code.
+
+In AWS Lambda, Environment Variables are part of the function's configuration, not the function's code package (the .zip file). When we change an environment variable in the AWS Console, we are updating the configuration. AWS automatically invalidates the existing execution environments. The next time the function is invoked, AWS spins up a new environment with the updated variables injected. Since the Python code uses os.getenv('LOG_LEVEL') to read the value dynamically at runtime, it will immediately pick up the new value (DEBUG) without us needing to re-upload the zip file.
+
+We would only need to redeploy if we changed the logic of how the logs are written (e.g., adding a new print), but not for changing the configuration of the log level.
 
 ---
 
 ### ❓ Question 8: Create GitHub actions to deploy the changes on the Lambda functions.
 
->
+We have created a GitHub Actions workflow (`.github/workflows/deploy_websocket.yml`) that automatically deploys changes to the WebSocket and SQS Lambda functions when code is pushed to the `websocket/lambda` folder. This ensures that all four microservices (Connect, Disconnect, Default, and SQS) are kept in sync with the repository.
+
+To make the deployment work, the following **Secrets** must be configured in the GitHub Repository settings (`Settings` -> `Secrets and variables` -> `Actions`):
+
+| Secret Name | Description |
+| :--- | :--- |
+| `AWS_ACCESS_KEY_ID` | The Access Key ID for the `lab_serverless_user` IAM user. |
+| `AWS_SECRET_ACCESS_KEY` | The Secret Access Key for the IAM user. |
+| `AWS_REGION` | The AWS Region where the infrastructure is deployed. |
+
+> **Note:** The workflow performs code updates (`aws lambda update-function-code`). It assumes that the underlying infrastructure (DynamoDB, SQS, API Gateway, and the 4 Lambda functions) has already been provisioned using the `deploy.sh` script.
+
+**How it works:**
+1. **Trigger:** The workflow is triggered only when a push occurs to the main branch and specifically affects files inside the `websocket/lambda/` directory.
+2. **Authentication:** It uses the `aws-actions/configure-aws-credentials` action to log in to AWS using the `lab_serverless_user` credentials stored in GitHub Secrets.
+3. **Packaging:** It creates four separate deployment packages:
+    *   One for the **SQS** function.
+    *   Three for the **WebSocket** functions (`connect`, `disconnect`, `default`). The workflow includes the shared `library_functions.py` file in these zip archives, as it is a required dependency.
+4. **Deployment:** It executes `aws lambda update-function-code` four times, targeting each specific function name (`Sqs`, `WebSocket_connect`, `WebSocket_disconnect`, and `WebSocket_default`) to update their logic in the cloud.
+
+![Lambda Functions Deployed](imatges/11_Lambda_Functions_Deployed.png)
+*Figure: The four Lambda functions successfully deployed in the AWS Console.*
+
 
 ---
 
