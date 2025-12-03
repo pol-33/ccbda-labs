@@ -7,7 +7,9 @@
 
 ### ❓ Question 1: Explain why every REST API verb is managed by a single line such as return respond(dynamodb.put_item(**json.loads(event['body']))). Explicit the parameters sent inside the kwargs of the dynamodb.*() methods used in the code and compare them with the AWS documentation.
 
-> *(To be answered)*
+The reason we can handle everything with that one-liner is down to Python's dictionary unpacking. By using the double asterisks (**), we take the JSON body from the frontend and instantly explode it into the keyword arguments the AWS SDK expects.
+
+It works because we designed the frontend to send payloads that match the Boto3 documentation exactly. For put_item, we send TableName and Item, which are the mandatory parameters listed in the AWS docs. For get_item and delete_item, we send TableName and Key. Since the input keys match the SDK's required arguments perfectly, the Lambda acts as a direct pass-through without needing any manual variable mapping.
 
 ![Lambda Function Created](imatges/1_Lambda_Func_Created.png)
 *Figure: The Lambda function successfully deployed in the AWS Console.*
@@ -62,8 +64,39 @@ To resolve this, we served the application using a local Python HTTP server:
 
 ### ❓ Question 3: Create a new shell script that removes all the assets that have been created.
 
-> *(To be answered)*
+This script is designed to dismantle the infrastructure we built, ensuring we don't leave any "zombie" resources running in our AWS account that could incur costs or clutter the environment. It operates by sourcing the same .env configuration file used during deployment to identify the correct resource names.
 
+```bash
+#!/bin/bash
+set -e # exit on first error
+
+# Load configuration variables (TABLE, LAMBDA, etc.)
+source $1
+
+# 1. Delete API Gateway
+# Since the API ID is random, we must look it up by name
+API_ID=$(aws apigatewayv2 get-apis --region $REGION | jq -r '.Items[] | select(.Name=="CrudHttpAPI") | .ApiId')
+
+if [ -n "$API_ID" ]; then
+    aws apigatewayv2 delete-api --api-id $API_ID --region $REGION
+fi
+
+# 2. Delete Lambda Function
+aws lambda delete-function --function-name $LAMBDA --region $REGION || echo "Lambda not found."
+
+# 3. Delete CloudWatch Logs
+# It is good practice to clean up the logs, otherwise they stay forever
+aws logs delete-log-group --log-group-name "/aws/lambda/$LAMBDA" --region $REGION || echo "Log group not found."
+
+# 4. Delete DynamoDB Table
+aws dynamodb delete-table --table-name $TABLE --region $REGION || echo "Table not found."
+
+# 5. Local File Cleanup
+rm -f lambda/lambda_crud.zip
+rm -f variables.json
+
+echo "Cleanup complete!"
+```
 ---
 
 ### ❓ Question 4: Retouch deploy.sh to make the API Gateway produce logs into the log group named "/aws/apiGW/LambdaCRUD" of your account. Explain what you have done and show the log outcome.
