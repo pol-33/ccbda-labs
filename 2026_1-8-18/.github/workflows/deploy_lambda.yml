@@ -1,0 +1,37 @@
+name: Deploy Lambda to AWS
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'serverless-app-sqs/crud/lambda/**' # Only triggers when the python code changes
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Package Lambda Function
+      run: |
+        # We zip the source code and the requirements file
+        cd serverless-app-sqs/crud/lambda
+        zip -r lambda_crud.zip lambda_crud.py requirements.txt
+
+    - name: Deploy (Update Code)
+      run: |
+        # We only update the code, we do not touch the infrastructure
+        cd serverless-app-sqs/crud/lambda
+        aws lambda update-function-code \
+          --function-name LambdaCRUD \
+          --zip-file fileb://lambda_crud.zip

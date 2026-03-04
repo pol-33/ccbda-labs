@@ -1,0 +1,113 @@
+#!/bin/bash
+
+set -e # exit on first error
+source $1
+
+ACCOUNT_ID=`aws sts get-caller-identity --query Account --output text`
+ROLE="arn:aws:iam::${ACCOUNT_ID}:role/${ROLE}"
+
+ENVIRONMENT_VARIABLES=()
+for var in API_KEY REGION CENTER TOP_LEFT BOTTOM_RIGHT DYNAMO_TABLE LOG_LEVEL; do
+  ENVIRONMENT_VARIABLES+=($var=${!var})
+done
+ENVIRONMENT=$(IFS=, ; echo "${ENVIRONMENT_VARIABLES[*]}")
+echo "ENVIRONMENT: ${ENVIRONMENT}"
+
+echo "Creating dynamo table ${DYNAMO_TABLE}"
+aws dynamodb create-table \
+  --table-name ${DYNAMO_TABLE} \
+  --attribute-definitions \
+        AttributeName=connectionid,AttributeType=S \
+  --key-schema \
+        AttributeName=connectionid,KeyType=HASH \
+  --billing-mode PAY_PER_REQUEST \
+  --region ${REGION}
+
+QUEUE_URL=`aws sqs create-queue \
+  --queue-name ${QUEUE_NAME} \
+  | jq -r '.QueueUrl'`
+
+QUEUE_ARN=`aws sqs get-queue-attributes \
+   --queue-url ${QUEUE_URL} \
+   --attribute-names QueueArn \
+   | jq -r '.Attributes.QueueArn'`
+
+pushd lambda/sqs
+zip lambda_sqs.zip lambda_sqs.py requirements.txt
+LAMBDA_ARN=`aws lambda create-function \
+  --function-name ${LAMBDA_SQS} \
+  --zip-file fileb://lambda_sqs.zip \
+  --handler lambda_sqs.lambda_handler \
+  --runtime python3.13 \
+  --role ${ROLE} \
+  --environment "Variables={${ENVIRONMENT}}" \
+  | jq -r '.FunctionArn'`
+echo "LAMBDA_ARN: ${LAMBDA_ARN}"
+
+aws lambda create-event-source-mapping \
+    --event-source ${QUEUE_ARN} \
+    --function-name ${LAMBDA_SQS}
+popd
+
+
+API_ID=`aws apigatewayv2 create-api \
+  --name "WebSocketAPI" \
+  --protocol-type WEBSOCKET \
+  --route-selection-expression "\$request.body.action" \
+   | jq -r '.ApiId'`
+echo "API_ID ${API_ID}"
+
+pushd lambda/websocket
+for ROUTE in connect disconnect default; do
+    echo "ROUTE: ${ROUTE}"
+
+    zip lambda_websocket_${ROUTE}.zip lambda_${ROUTE}.py library_functions.py requirements.txt
+    LAMBDA_ARN=`aws lambda create-function \
+    --function-name ${LAMBDA_WEBSOCKET}_${ROUTE} \
+    --zip-file fileb://lambda_websocket_${ROUTE}.zip \
+    --handler lambda_${ROUTE}.lambda_handler \
+    --runtime python3.13 \
+    --role ${ROLE} \
+    --environment "Variables={${ENVIRONMENT}}" \
+    | jq -r '.FunctionArn'`
+    echo "LAMBDA_ARN: ${LAMBDA_ARN}"
+
+    STATEMENT_ID=`uuidgen`
+    echo "STATEMENT_ID ${STATEMENT_ID}"
+    aws lambda add-permission \
+      --function-name ${LAMBDA_WEBSOCKET}_${ROUTE} \
+      --principal apigateway.amazonaws.com \
+      --statement-id "${STATEMENT_ID}" \
+      --action lambda:InvokeFunction \
+      --source-arn "arn:aws:execute-api:${REGION}:${ACCOUNT_ID}:${API_ID}/*/\$${ROUTE}"
+
+    INTEGRATION_ID=`aws apigatewayv2 create-integration \
+    --api-id ${API_ID} \
+    --integration-type AWS_PROXY \
+    --integration-uri arn:aws:apigateway:${REGION}:lambda:path/2015-03-31/functions/${LAMBDA_ARN}/invocations \
+    --integration-method POST \
+    | jq -r '.IntegrationId' `
+    echo "INTEGRATION_ID: ${INTEGRATION_ID}"
+
+    aws apigatewayv2 create-route \
+      --api-id ${API_ID} \
+      --route-key \$${ROUTE} \
+      --target "integrations/${INTEGRATION_ID}"
+done
+popd
+
+STAGE="production"
+aws apigatewayv2 create-stage \
+     --api-id ${API_ID} \
+     --stage-name ${STAGE} \
+     --no-auto-deploy
+
+aws apigatewayv2 create-deployment \
+    --api-id ${API_ID} \
+    --stage-name ${STAGE}
+
+URL="wss://${API_ID}.execute-api.${REGION}.amazonaws.com/${STAGE}/"
+
+echo "URL: ${URL}"
+
+echo -e "{\"url\":\"${URL}\"}" > variables.json; cat variables.json
